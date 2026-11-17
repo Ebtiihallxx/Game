@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Stars Adventure | مغامرات إنجليش ستارز</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #e0f2fe; color: #1e1b4b; min-height: 100vh; overflow-x: hidden; }
+        .en-font { font-family: 'Fredoka', cursive, sans-serif; }
+        .toca-bg {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.85) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(252,211,77,0.35) 0%, transparent 40%),
+                linear-gradient(135deg, #bae6fd 0%, #fbcfe8 50%, #bbf7d0 100%);
+        }
+        .game-card {
+            background: rgba(255, 255, 255, 0.96);
+            border: 3.5px solid #1e1b4b;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.2);
+        }
+        .game-btn {
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 3px solid #1e1b4b;
+            box-shadow: 0 4px 0 #1e1b4b;
+            border-radius: 1.25rem;
+        }
+        .game-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #1e1b4b; }
+        .game-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e1b4b; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .float-slow { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="toca-bg">
+
+    <!-- شاشة الاحتفال الكبرى -->
+    <div id="celebration-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="game-card bg-white p-8 max-w-sm w-full text-center space-y-4 animate-bounce">
+            <div class="text-6xl">🌟🎉</div>
+            <h2 id="celebration-title" class="text-3xl font-black text-pink-600 en-font">أحسنتِ يا بطلة!</h2>
+            <p id="celebration-desc" class="text-sm font-bold text-slate-700">لقد ربحتِ نجمة جديدة واقتربتِ من فتح المرحلة التالية!</p>
+            <button onclick="closeCelebration()" class="w-full py-3 bg-emerald-400 hover:bg-emerald-500 text-white font-black text-base game-btn">
+                استمرار المغامرة 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 1. شاشة تسجيل الدخول ==================== -->
+    <div id="login-screen" class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div class="game-card max-w-md w-full p-6 sm:p-8 text-center">
+            <div class="mb-4 float-slow">
+                <div class="inline-block bg-amber-200 px-4 py-1 rounded-full border-2 border-slate-900 text-xs font-black text-amber-900 mb-2">
+                    ✨ TOP STARS 5 • TOCA ADVENTURE ✨
+                </div>
+                <h1 class="en-font text-4xl sm:text-5xl font-black tracking-wide leading-tight">
+                    <span class="text-emerald-500">E</span><span class="text-sky-500">N</span><span class="text-amber-400">G</span><span class="text-pink-500">L</span><span class="text-purple-500">I</span><span class="text-rose-500">S</span><span class="text-teal-500">H</span>
+                </h1>
+                <div class="en-font text-2xl sm:text-3xl font-black text-amber-500 -mt-1">
+                    STARS ADVENTURE 🌟
+                </div>
+            </div>
+
+            <p class="text-xs sm:text-sm font-black text-purple-900 bg-amber-100/90 py-2.5 px-3 rounded-2xl border-2 border-slate-900 mb-5">
+                أهلاً بكِ في مغامرات إنجليش ستارز! أدخلي اسم المستخدم وكلمة المرور 🎀
+            </p>
+
+            <form onsubmit="handleLogin(event)" class="space-y-3.5 text-right">
+                <div>
+                    <label class="block text-xs font-black text-purple-900 mb-1 mr-1">اسم المستخدم (Username):</label>
+                    <input id="login-username" type="text" required value="jood" class="w-full p-3.5 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-purple-900 mb-1 mr-1">كلمة المرور (Password):</label>
+                    <input id="login-password" type="password" required value="1234" class="w-full p-3.5 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                </div>
+                <p id="login-error" class="hidden text-xs font-black text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-300 text-center"></p>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-base game-btn">
+                    دخول عالم المغامرات 🚀
+                </button>
+            </form>
+            <div class="mt-4 flex gap-2">
+                <button onclick="quickLogin('jood', '1234')" class="flex-1 py-2.5 bg-pink-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👧🏽 دخول طالبة (جود)</button>
+                <button onclick="quickLogin('teacher', '123456')" class="flex-1 py-2.5 bg-indigo-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👩‍🏫 دخول المعلمة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. لوحة الطالبة الرئيسية ==================== -->
+    <div id="student-app" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-5">
+        <header class="game-card p-4 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div id="student-header-avatar" class="w-14 h-14 bg-pink-100 rounded-2xl border-2 border-slate-900 flex items-center justify-center overflow-hidden shadow-inner cursor-pointer" onclick="switchStudentTab('avatar')"></div>
+                <div>
+                    <h2 id="student-welcome-name" class="font-black text-base text-pink-600">مرحباً، جود ⭐</h2>
+                    <p class="text-[11px] text-purple-900 font-bold">الصف الخامس • منهج Top Stars 5</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5 flex-wrap">
+                <div class="bg-amber-100 border-2 border-slate-900 text-amber-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
+                    ⭐ <span id="stat-stars">30</span> نجوم
+                </div>
+                <div class="bg-purple-100 border-2 border-slate-900 text-purple-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
+                    💎 <span id="stat-gems">10</span> جواهر
+                </div>
+                <div class="bg-teal-100 border-2 border-slate-900 text-teal-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
+                    👑 <span id="stat-crowns">1</span> تيجان
+                </div>
+                <button id="bgm-toggle-btn" onclick="toggleBackgroundMusic()" class="bg-sky-100 border-2 border-slate-900 px-2.5 py-1 rounded-full font-black text-sky-900 text-xs game-btn">
+                    🎵 موسيقى هادئة
+                </button>
+                <button onclick="logout()" class="bg-rose-100 border-2 border-slate-900 text-rose-900 px-3 py-1 rounded-full font-black text-xs game-btn">
+                    خروج
+                </button>
+            </div>
+        </header>
+
+        <nav class="flex gap-2 bg-white/80 p-2 rounded-2xl border-2 border-slate-900 shadow-sm overflow-x-auto">
+            <button onclick="switchStudentTab('map')" class="flex-1 min-w-[90px] py-2.5 bg-pink-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
+                🗺️ خريطة الجزر
+            </button>
+            <button onclick="switchStudentTab('avatar')" class="flex-1 min-w-[90px] py-2.5 bg-purple-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
+                👗 الأفاتار
+            </button>
+            <button onclick="switchStudentTab('review')" class="flex-1 min-w-[90px] py-2.5 bg-amber-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
+                📦 صندوق المراجعة
+            </button>
+        </nav>
+
+        <main>
+            <div id="tab-map" class="space-y-5">
+                <div class="relative w-full h-56 sm:h-64 rounded-3xl overflow-hidden border-3 border-slate-900 shadow-lg bg-gradient-to-b from-sky-200 via-pink-100 to-emerald-200 flex items-center justify-center">
+                    <div class="absolute inset-0 pointer-events-none">
+                        <div class="absolute bottom-0 inset-x-0 h-14 bg-emerald-400 border-t-3 border-slate-900"></div>
+                        <div class="absolute bottom-10 left-6 text-4xl">🌸</div>
+                        <div class="absolute bottom-10 right-8 text-4xl">🍄</div>
+                        <div class="absolute top-10 left-10 text-3xl opacity-80">☁️</div>
+                    </div>
+                    <div id="home-avatar-stage" onclick="triggerAvatarJump()" class="relative z-10 w-44 h-52 cursor-pointer transition-transform duration-300 flex items-center justify-center"></div>
+                    <div class="absolute top-3 left-3 bg-white/95 px-3 py-1.5 rounded-2xl shadow border-2 border-slate-900 flex items-center gap-2">
+                        <span class="text-xl">🦉</span>
+                        <span class="text-[11px] font-black text-purple-900">البومة لولو: اختاري الجزيرة وتتابعي المراحل الـ 6 يوماً بيوم!</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <div class="lg:col-span-1 space-y-3" id="worlds-list"></div>
+                    <div class="lg:col-span-2 game-card p-5 space-y-4">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-3">
+                            <h3 id="current-world-title" class="text-xl font-black text-purple-800">📚 Word Island - جزيرة المفردات</h3>
+                            <span id="world-progress-badge" class="bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-black border border-slate-900">المرحلة الحالية: يوم 1</span>
+                        </div>
+                        <p class="text-xs font-bold text-slate-600">أنجزي مهمة كل يوم بالترتيب لتنتقل للمرحلة التالية وتفتحي أسرار الجزيرة وتجمعي النجوم!</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="stages-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-avatar" class="hidden game-card p-5 space-y-4">
+                <div class="text-center">
+                    <h2 class="text-2xl font-black text-pink-600">👗 استوديو توكا بوكا للأفاتار</h2>
+                    <p class="text-xs font-bold text-slate-600">خصصي شخصيتكِ الكرتونية بالكامل وشاهديها تتغير فوراً!</p>
+                </div>
+                <div class="relative w-full h-56 rounded-3xl overflow-hidden border-3 border-slate-900 bg-gradient-to-b from-pink-100 to-purple-100 flex items-center justify-center">
+                    <div id="studio-avatar-stage" onclick="triggerAvatarJump()" class="w-48 h-52 cursor-pointer transition-transform duration-300 flex items-center justify-center"></div>
+                </div>
+                <div class="space-y-3 bg-purple-50 p-4 rounded-2xl border-2 border-purple-200" id="avatar-customizer-controls"></div>
+            </div>
+
+            <div id="tab-review" class="hidden game-card p-5 space-y-4">
+                <div class="text-center">
+                    <h2 class="text-2xl font-black text-amber-600">📦 صندوق مراجعة الكلمات والفاقد</h2>
+                    <p class="text-xs font-bold text-slate-600">الكلمات التي أخطأتِ فيها مع معانيها العربية لتراجعيتها وحفظها بسهولة!</p>
+                </div>
+                <div id="review-words-container" class="space-y-3"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- نافذة المهمة واللعبة -->
+    <div id="mission-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-40">
+        <div class="game-card bg-white p-6 max-w-lg w-full shadow-2xl relative text-right">
+            <button onclick="closeMissionModal()" class="absolute top-4 left-4 text-slate-400 hover:text-rose-500 text-xl font-bold">✕</button>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-3xl" id="gm-icon">🎮</span>
+                <div>
+                    <h3 id="gm-title" class="text-lg font-black text-purple-800">مهمة اليوم</h3>
+                    <p id="gm-story" class="text-xs font-bold text-slate-500">قصة المهمة...</p>
+                </div>
+            </div>
+            <div id="gm-body" class="mt-4 space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- لوحة المعلمة -->
+    <div id="teacher-app" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-5">
+        <header class="game-card p-4 flex justify-between items-center bg-indigo-50">
+            <div>
+                <h2 class="text-2xl font-black text-indigo-800">👩‍🏫 لوحة تحكم المعلمة المتكاملة</h2>
+                <p class="text-xs font-bold text-slate-600">متابعة طالبات الصف الخامس (5A, 5B, 5C)، تقدم المراحل، ومعالجة الفاقد التعليمي</p>
+            </div>
+            <button onclick="logout()" class="bg-rose-100 border-2 border-slate-900 text-rose-900 px-3.5 py-1.5 rounded-full font-black text-xs game-btn">تسجيل الخروج</button>
+        </header>
+        <div class="game-card p-5 space-y-4">
+            <h3 class="text-lg font-black text-indigo-900">سجل طالبات الصف الخامس الابتدائي</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right text-xs">
+                    <thead class="bg-indigo-100 text-indigo-900 font-black">
+                        <tr>
+                            <th class="p-3 rounded-r-xl">اسم الطالبة</th>
+                            <th class="p-3">اسم المستخدم</th>
+                            <th class="p-3">الفصل</th>
+                            <th class="p-3">النجوم</th>
+                            <th class="p-3">التيجان</th>
+                            <th class="p-3 rounded-l-xl">الحالة التعليمية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacher-students-tbody" class="divide-y divide-slate-100 font-bold"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- البرمجية ومنطق الألعاب -->
+    <script>
+        const soundFX = {
+            ctx: null,
+            enabled: true,
+            bgmEnabled: false,
+            bgmTimer: null,
+            noteStep: 0,
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            },
+            startCalmBGM() {
+                if (!this.bgmEnabled || this.bgmTimer) return;
+                this.init();
+                const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46];
+                this.bgmTimer = setInterval(() => {
+                    if (!this.bgmEnabled || !this.ctx || document.hidden) return;
+                    const freq = melody[this.noteStep % melody.length];
+                    this.noteStep++;
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.linearRampToValueAtTime(0.022, now + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.75);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.8);
+                }, 800);
+            },
+            stopCalmBGM() {
+                if (this.bgmTimer) { clearInterval(this.bgmTimer); this.bgmTimer = null; }
+            },
+            playWin() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                    gain.gain.setValueAtTime(0.12, now + idx * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.06);
+                    osc.stop(now + idx * 0.06 + 0.2);
+                });
+            },
+            playJump() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(650, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+        };
+
+        function toggleBackgroundMusic() {
+            soundFX.bgmEnabled = !soundFX.bgmEnabled;
+            const btn = document.getElementById('bgm-toggle-btn');
+            if (soundFX.bgmEnabled) {
+                soundFX.startCalmBGM();
+                if (btn) btn.innerText = '🔊 الموسيقى تعمل';
+            } else {
+                soundFX.stopCalmBGM();
+                if (btn) btn.innerText = '🎵 موسيقى هادئة';
+            }
+        }
+
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        const AVATAR_CATALOG = {
+            skin: [
+                { id: 'skin_fair', label: 'فاتح', hex: '#ffdfc4', blush: '#fda4af' },
+                { id: 'skin_warm', label: 'حنطي', hex: '#f3c18a', blush: '#fb7185' },
+                { id: 'skin_tan', label: 'قمحي', hex: '#d99b66', blush: '#f43f5e' }
+            ],
+            hair: [
+                { id: 'hair_toca_buns', label: 'كعكتين توكا السماوي', color: '#5eead4', style: 'toca_buns' },
+                { id: 'hair_toca_bangs', label: 'شعر أسود بغرة', color: '#1e1b4b', style: 'toca_bangs' },
+                { id: 'hair_pink', label: 'ضفائر وردية', color: '#f472b6', style: 'pigtails' }
+            ],
+            outfit: [
+                { id: 'dress_toca_hoodie', label: 'سويتر توكا الوردي', top: '#fbcfe8', bottom: '#1e293b', style: 'hoodie' },
+                { id: 'dress_mint', label: 'طقم النعناع', top: '#34d399', bottom: '#334155', style: 'hoodie' },
+                { id: 'dress_purple', label: 'فستان الأميرة', top: '#c084fc', bottom: '#9333ea', style: 'dress' }
+            ],
+            accessory: [
+                { id: 'acc_none', label: 'بدون' },
+                { id: 'acc_crown', label: 'تاج ذهبي ملكي' },
+                { id: 'acc_bow', label: 'فيونكة توكا الكبيرة' }
+            ]
+        };
+
+        const WORLDS_DATA = [
+            { key: 'word_island', title: '📚 Word Island', desc: 'جزيرة المفردات' },
+            { key: 'grammar_castle', title: '🏰 Grammar Castle', desc: 'قلعة القواعد' },
+            { key: 'reading_forest', title: '🌳 Reading Forest', desc: 'غابة القراءة' },
+            { key: 'writing_garden', title: '🌸 Writing Garden', desc: 'حديقة الكتابة' },
+            { key: 'spelling_sky', title: '☁️ Spelling Sky', desc: 'سماء الإملاء' }
+        ];
+
+        const MISSIONS_BY_STAGE = {
+            'word_island': [
+                { stage: 1, type: 'mcq', title: 'اليوم 1: المفردات الأساسية', story: 'تعرفي على الجنسية الصحيحة:', payload: { prompt: 'She is from Saudi Arabia. She is _______.', options: ['Saudi', 'Kuwaiti', 'British', 'Italian'], answer: 'Saudi', arabicMeaning: 'Saudi = سعودية' }, stars: 1 },
+                { stage: 2, type: 'listen', title: 'اليوم 2: استمع و اختر المكان المناسب 🔊', story: 'استمعي للكلمة واختاري معناها الصحيح:', payload: { speakText: 'Hospital', prompt: 'Listen and choose the correct place:', options: ['Hospital', 'School', 'Park', 'Supermarket'], answer: 'Hospital', arabicMeaning: 'Hospital = مستشفى' }, stars: 1 },
+                { stage: 3, type: 'mcq', title: 'اليوم 3: الوظائف والمهن', story: 'اختاري الوظيفة المناسبة للصورة:', payload: { prompt: 'He works in a hospital and helps sick people. He is a _______.', options: ['Teacher', 'Doctor', 'Pilot', 'Chef'], answer: 'Doctor', arabicMeaning: 'Doctor = طبيب' }, stars: 1 },
+                { stage: 4, type: 'listen', title: 'اليوم 4: استمع وتعرف على الأشياء 🔊', story: 'استمعي واكتشفي الكلمة:', payload: { speakText: 'Computer', prompt: 'Listen to audio:', options: ['Computer', 'Book', 'Pencil', 'Bag'], answer: 'Computer', arabicMeaning: 'Computer = حاسوب' }, stars: 1 },
+                { stage: 5, type: 'mcq', title: 'اليوم 5: الأطعمة والمشروبات', story: 'ما هي الأكلة المفضلة في الفطور؟', payload: { prompt: 'I like to eat _______ with milk in the morning.', options: ['cereal', 'fish', 'soup', 'meat'], answer: 'cereal', arabicMeaning: 'cereal = حبوب الفطور' }, stars: 1 },
+                { stage: 6, title: 'اليوم 6: تحدي جزيرة المفردات الشامل', type: 'mcq', story: 'التحدي النهائي للجزيرة!', payload: { prompt: 'The opposite of "hot" is _______.', options: ['cold', 'warm', 'sunny', 'wet'], answer: 'cold', arabicMeaning: 'cold = بارد' }, stars: 1 }
+            ],
+            'grammar_castle': [
+                { stage: 1, type: 'fill_blank', title: 'اليوم 1: ضمائر الفاعل و Verb to Be', story: 'أكملي الجملة بشكل صحيح:', payload: { prompt: 'They _______ happy students in Grade 5.', options: ['is', 'am', 'are'], answer: 'are', arabicMeaning: 'They يأخذ الفعل are للجمع' }, stars: 1 },
+                { stage: 2, type: 'mcq', title: 'اليوم 2: المضارع البسيط (Present Simple)', story: 'اختاري الفعل الصحيح مع المفرد:', payload: { prompt: 'Omar _______ football every afternoon.', options: ['play', 'plays', 'playing'], answer: 'plays', arabicMeaning: 'مع المفرد الغائب نضيف s للفعل' }, stars: 1 },
+                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر القاعدة الصحيحة 🔊', story: 'استمعي للجملة وحددي الزمن:', payload: { speakText: 'She reads books', prompt: 'Listen to the correct sentence:', options: ['She reads books', 'She read book', 'She reading book'], answer: 'She reads books', arabicMeaning: 'مضارع بسيط يعبر عن العادات' }, stars: 1 },
+                { stage: 4, type: 'mcq', title: 'اليوم 4: تكوين الأسئلة (Do / Does)', story: 'اختاري الفعل المساعد المناسب:', payload: { prompt: '_______ you like English?', options: ['Do', 'Does', 'Is', 'Are'], answer: 'Do', arabicMeaning: 'الضمير You يأخذ Do في السؤال' }, stars: 1 },
+                { stage: 5, type: 'fill_blank', title: 'اليوم 5: حروف الجر (In / On / At)', story: 'حددي حرف الجر المناسب للوقت:', payload: { prompt: 'I get up _______ 7 o’clock in the morning.', options: ['at', 'on', 'in'], answer: 'at', arabicMeaning: 'نستخدم at مع الساعات المحددة' }, stars: 1 },
+                { stage: 6, title: 'اليوم 6: تحدي قلعة القواعد الشامل', type: 'mcq', story: 'اختبار القلعة النهائي!', payload: { prompt: 'We _______ to school yesterday.', options: ['go', 'went', 'going'], answer: 'went', arabicMeaning: 'went هو الماضي البسيط من go' }, stars: 1 }
+            ],
+            'reading_forest': [
+                { stage: 1, type: 'mcq', title: 'اليوم 1: قراءة وفهم الروتين اليومي', story: 'اقرئي القطعة بعناية:', payload: { passage: 'Hello! My name is Maha. I wake up at six o’clock every morning. I eat a healthy breakfast and go to school by bus.', prompt: 'How does Maha go to school?', options: ['By car', 'By bus', 'On foot', 'By bike'], answer: 'By bus', arabicMeaning: 'go to school by bus = تذهب بالحافلة' }, stars: 1 },
+                { stage: 2, type: 'mcq', title: 'اليوم 2: قراءة قصة أصدقاء المدرسة', story: 'اقرئي وأجيبي:', payload: { passage: 'Ahmed and Ali are best friends. They love playing football in the school playground after classes finish.', prompt: 'What do Ahmed and Ali love doing?', options: ['Playing football', 'Reading books', 'Swimming', 'Drawing'], answer: 'Playing football', arabicMeaning: 'playing football = لعب كرة القدم' }, stars: 1 },
+                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واقرأ النص القصير 🔊', story: 'استمعي للنص الصوتي:', payload: { speakText: 'The weather is sunny and warm today', prompt: 'Listen and choose the weather description:', options: ['The weather is sunny and warm today', 'It is raining heavily', 'It is very cold'], answer: 'The weather is sunny and warm today', arabicMeaning: 'طقس مشمس ودافئ' }, stars: 1 },
+                { stage: 4, type: 'mcq', title: 'اليوم 4: قراءة عن الحيوانات', story: 'اقرئي المعلومة:', payload: { passage: 'The camel is a wonderful animal. It lives in the desert and can walk on sand easily without water for many days.', prompt: 'Where does the camel live?', options: ['In the desert', 'In the sea', 'In the forest', 'In the city'], answer: 'In the desert', arabicMeaning: 'in the desert = في الصحراء' }, stars: 1 },
+                { stage: 5, type: 'mcq', title: 'اليوم 5: قراءة عن الهوايات', story: 'اقرئي القطعة:', payload: { passage: 'Sara likes reading adventure stories in the library every Thursday afternoon.', prompt: 'Where does Sara read stories?', options: ['In the library', 'At home', 'In the park', 'At school'], answer: 'In the library', arabicMeaning: 'in the library = في المكتبة' }, stars: 1 },
+                { stage: 6, title: 'اليوم 6: تحدي غابة القراءة الشامل', type: 'mcq', story: 'التحدي النهائي للقراءة!', payload: { passage: 'We visited the museum last week and saw amazing old things.', prompt: 'When did they visit the museum?', options: ['Last week', 'Yesterday', 'Tomorrow', 'Next year'], answer: 'Last week', arabicMeaning: 'last week = الأسبوع الماضي' }, stars: 1 }
+            ],
+            'writing_garden': [
+                { stage: 1, type: 'mcq', title: 'اليوم 1: اختيار الجملة الصحيحة إملائياً', story: 'اختاري الترتيب الصحيح للجملة:', payload: { prompt: 'Choose the correct sentence:', options: ['I like learning English', 'English like I learning', 'Learning I english like'], answer: 'I like learning English', arabicMeaning: 'I like learning English = أنا أحب تعلم الإنجليزية' }, stars: 1 },
+                { stage: 2, type: 'mcq', title: 'اليوم 2: بناء الجملة اليومية', story: 'اختاري الجملة الصحيحة:', payload: { prompt: 'Choose the correct daily routine sentence:', options: ['I get up early', 'Up early get I', 'Early I get up'], answer: 'I get up early', arabicMeaning: 'I get up early = أنا أستيقظ مبكراً' }, stars: 1 },
+                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر الجملة المكتوبة بدقة 🔊', story: 'استمعي للجملة الإنجليزية:', payload: { speakText: 'My favorite subject is English', prompt: 'Listen and choose the sentence you hear:', options: ['My favorite subject is English', 'I like math class', 'Science is fun'], answer: 'My favorite subject is English', arabicMeaning: 'مادتي المفضلة هي الإنجليزية' }, stars: 1 },
+                { stage: 4, type: 'mcq', title: 'اليوم 4: كتابة التعبير عن الهواية', story: 'اختاري التعبير الأصح:', payload: { prompt: 'Choose the correct sentence about playing sports:', options: ['We play football every Friday', 'Play football we friday every', 'Every friday football play we'], answer: 'We play football every Friday', arabicMeaning: 'نلعب كرة القدم كل جمعة' }, stars: 1 },
+                { stage: 5, type: 'mcq', title: 'اليوم 5: الجملة الوصفية الصحيحة', story: 'اختاري الترتيب الأصح:', payload: { prompt: 'Choose the correct sentence:', options: ['Our school is big', 'Big school is our', 'Is school our big'], answer: 'Our school is big', arabicMeaning: 'مدرستنا كبيرة' }, stars: 1 },
+                { stage: 6, title: 'اليوم 6: تحدي حديقة الكتابة الشامل', type: 'mcq', story: 'التحدي النهائي للكتابة!', payload: { prompt: 'Choose the correct sentence:', options: ['I am very happy', 'Very happy am i', 'Am i very happy'], answer: 'I am very happy', arabicMeaning: 'أنا سعيد جداً' }, stars: 1 }
+            ],
+            'spelling_sky': [
+                { stage: 1, type: 'mcq', title: 'اليوم 1: تهجئة كلمة مدرسة (School)', story: 'اختر التهجئة الإملائية الصحيحة للكلمة:', payload: { prompt: 'Which word is spelled correctly for (مدرسة)?', options: ['school', 'skool', 'scholl', 'shcool'], answer: 'school', arabicMeaning: 'school = مدرسة' }, stars: 1 },
+                { stage: 2, type: 'mcq', title: 'اليوم 2: تهجئة كلمة كتاب (Book)', story: 'اختاري التهجئة الصحيحة:', payload: { prompt: 'Which spelling is correct for (كتاب)?', options: ['book', 'bok', 'bouk', 'buuk'], answer: 'book', arabicMeaning: 'book = كتاب' }, stars: 1 },
+                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر الكلمة المتهجأة صحيحة 🔊', story: 'استمعي للصوت واختاري الكلمة الصحيحة إملائياً:', payload: { speakText: 'Teacher', prompt: 'Listen to the word:', options: ['Teacher', 'Techer', 'Tichor', 'Teecher'], answer: 'Teacher', arabicMeaning: 'Teacher = معلم / معلمة' }, stars: 1 },
+                { stage: 4, type: 'mcq', title: 'اليوم 4: تهجئة كلمة صديق (Friend)', story: 'اختاري التهجئة الإملائية الدقيقة:', payload: { prompt: 'Choose the correct spelling for (صديق):', options: ['friend', 'freind', 'frind', 'frend'], answer: 'friend', arabicMeaning: 'friend = صديق' }, stars: 1 },
+                { stage: 5, type: 'mcq', title: 'اليوم 5: تهجئة كلمة عائلة (Family)', story: 'اختاري التهجئة الصحيحة:', payload: { prompt: 'Choose the correct spelling for (عائلة):', options: ['family', 'famly', 'famely', 'familey'], answer: 'family', arabicMeaning: 'family = عائلة' }, stars: 1 },
+                { stage: 6, title: 'اليوم 6: تحدي سماء الإملاء الشامل', story: 'التحدي النهائي للإملاء والتهجئة!', payload: { prompt: 'Choose the correct spelling for (طائر):', options: ['bird', 'berd', 'byrd', 'bierd'], answer: 'bird', arabicMeaning: 'bird = طائر' }, stars: 1 }
+            ]
+        };
+
+        let studentData = {
+            profile: { stars: 30, gems: 10, crowns: 1, avatar_config: { skin: 'skin_fair', hair: 'hair_toca_buns', outfit: 'dress_toca_hoodie', accessory: 'acc_crown' } },
+            currentWorld: 'word_island',
+            unlockedStages: { word_island: 1, grammar_castle: 1, reading_forest: 1, writing_garden: 1, spelling_sky: 1 },
+            completedStages: { word_island: [], grammar_castle: [], reading_forest: [], writing_garden: [], spelling_sky: [] },
+            reviewBox: []
+        };
+
+        function buildTocaAvatarSVG(cfg) {
+            const skin = AVATAR_CATALOG.skin.find(s => s.id === (cfg?.skin || 'skin_fair')) || AVATAR_CATALOG.skin[0];
+            const hair = AVATAR_CATALOG.hair.find(h => h.id === (cfg?.hair || 'hair_toca_buns')) || AVATAR_CATALOG.hair[0];
+            const outfit = AVATAR_CATALOG.outfit.find(o => o.id === (cfg?.outfit || 'dress_toca_hoodie')) || AVATAR_CATALOG.outfit[0];
+            const acc = cfg?.accessory || 'acc_none';
+
+            let backHair = `<rect x="44" y="22" width="24" height="36" rx="12" transform="rotate(-18 56 40)" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>
+                            <rect x="132" y="22" width="24" height="36" rx="12" transform="rotate(18 144 40)" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>
+                            <path d="M52 86 C48 122 60 134 100 134 C140 134 152 122 148 86 Z" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>`;
+            let frontHair = `<path d="M50 86 C50 44 150 44 150 86 C136 74 118 72 100 82 C82 72 64 74 50 86 Z" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5" stroke-linejoin="round"/>`;
+
+            let accSvg = '';
+            if (acc === 'acc_crown') accSvg = `<polygon points="78,46 84,26 94,38 100,22 106,38 116,26 122,46" fill="#facc15" stroke="#1e1b4b" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="37" r="3" fill="#f43f5e"/>`;
+            if (acc === 'acc_bow') accSvg = `<g transform="translate(132, 50) rotate(22)"><polygon points="0,0 -18,-12 -18,12" fill="#f43f5e" stroke="#1e1b4b" stroke-width="3.5"/><circle cx="0" cy="0" r="6" fill="#fde047" stroke="#1e1b4b" stroke-width="3"/></g>`;
+
+            return `<svg viewBox="0 0 200 225" class="w-full h-full drop-shadow-md">
+                <ellipse cx="100" cy="212" rx="46" ry="9" fill="rgba(30,27,75,0.18)"/>
+                ${backHair}
+                <rect x="48" y="144" width="22" height="34" rx="11" transform="rotate(24 59 161)" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
+                <circle cx="51" cy="176" r="8" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4"/>
+                <rect x="130" y="144" width="22" height="34" rx="11" transform="rotate(-24 141 161)" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
+                <circle cx="149" cy="176" r="8" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4"/>
+                <ellipse cx="84" cy="204" rx="14" ry="8" fill="#334155" stroke="#1e1b4b" stroke-width="4"/>
+                <ellipse cx="116" cy="204" rx="14" ry="8" fill="#334155" stroke="#1e1b4b" stroke-width="4"/>
+                <rect x="68" y="140" width="64" height="44" rx="16" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
+                <ellipse cx="100" cy="96" rx="50" ry="46" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4.5"/>
+                <ellipse cx="72" cy="108" rx="8" ry="5" fill="${skin.blush}" opacity="0.75"/>
+                <ellipse cx="128" cy="108" rx="8" ry="5" fill="${skin.blush}" opacity="0.75"/>
+                <circle cx="80" cy="98" r="6.5" fill="#1e1b4b"/><circle cx="78" cy="96" r="2.2" fill="#ffffff"/>
+                <circle cx="120" cy="98" r="6.5" fill="#1e1b4b"/><circle cx="118" cy="96" r="2.2" fill="#ffffff"/>
+                <path d="M91 112 Q100 123 109 112 Z" fill="#fb7185" stroke="#1e1b4b" stroke-width="3.5" stroke-linejoin="round"/>
+                ${frontHair}
+                ${accSvg}
+            </svg>`;
+        }
+
+        function triggerAvatarJump() {
+            soundFX.playJump();
+            ['home-avatar-stage', 'studio-avatar-stage', 'student-header-avatar'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.transform = 'translateY(-20px) scale(1.06)';
+                    setTimeout(() => { el.style.transform = 'translateY(0px) scale(1)'; }, 250);
+                }
+            });
+        }
+
+        function quickLogin(username, password) {
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').value = password;
+            handleLogin(new Event('submit'));
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value.trim();
+            const errEl = document.getElementById('login-error');
+            errEl.classList.add('hidden');
+
+            if (username === 'teacher' && password === '123456') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('teacher-app').classList.remove('hidden');
+                renderTeacherDashboard();
+            } else if (username.length > 0) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('student-app').classList.remove('hidden');
+                initStudentSession();
+            } else {
+                errEl.innerText = 'يرجى التأكد من اسم المستخدم وكلمة المرور!';
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            document.getElementById('student-app').classList.add('hidden');
+            document.getElementById('teacher-app').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function initStudentSession() {
+            document.getElementById('student-welcome-name').innerText = `مرحباً، جود ⭐`;
+            document.getElementById('stat-stars').innerText = studentData.profile.stars;
+            document.getElementById('stat-gems').innerText = studentData.profile.gems;
+            document.getElementById('stat-crowns').innerText = studentData.profile.crowns;
+
+            renderStudentAvatars();
+            renderWorldsList();
+            renderStagesGrid();
+            renderReviewBox();
+        }
+
+        function renderStudentAvatars() {
+            const svg = buildTocaAvatarSVG(studentData.profile.avatar_config);
+            document.getElementById('student-header-avatar').innerHTML = svg;
+            document.getElementById('home-avatar-stage').innerHTML = svg;
+            document.getElementById('studio-avatar-stage').innerHTML = svg;
+            renderAvatarCustomizerControls();
+        }
+
+        function renderAvatarCustomizerControls() {
+            const container = document.getElementById('avatar-customizer-controls');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                    <div>
+                        <label class="font-black block mb-1">لون البشرة:</label>
+                        <select onchange="updateAvatarPart('skin', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
+                            ${AVATAR_CATALOG.skin.map(s => `<option value="${s.id}" ${studentData.profile.avatar_config.skin === s.id ? 'selected' : ''}>${s.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-black block mb-1">تسريحة الشعر:</label>
+                        <select onchange="updateAvatarPart('hair', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
+                            ${AVATAR_CATALOG.hair.map(h => `<option value="${h.id}" ${studentData.profile.avatar_config.hair === h.id ? 'selected' : ''}>${h.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-black block mb-1">الملابس:</label>
+                        <select onchange="updateAvatarPart('outfit', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
+                            ${AVATAR_CATALOG.outfit.map(o => `<option value="${o.id}" ${studentData.profile.avatar_config.outfit === o.id ? 'selected' : ''}>${o.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-black block mb-1">الإكسسوار:</label>
+                        <select onchange="updateAvatarPart('accessory', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
+                            ${AVATAR_CATALOG.accessory.map(a => `<option value="${a.id}" ${studentData.profile.avatar_config.accessory === a.id ? 'selected' : ''}>${a.label}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateAvatarPart(part, val) {
+            studentData.profile.avatar_config[part] = val;
+            renderStudentAvatars();
+        }
+
+        function switchStudentTab(tab) {
+            document.getElementById('tab-map').classList.add('hidden');
+            document.getElementById('tab-avatar').classList.add('hidden');
+            document.getElementById('tab-review').classList.add('hidden');
+
+            if (tab === 'map') document.getElementById('tab-map').classList.remove('hidden');
+            if (tab === 'avatar') document.getElementById('tab-avatar').classList.remove('hidden');
+            if (tab === 'review') {
+                document.getElementById('tab-review').classList.remove('hidden');
+                renderReviewBox();
+            }
+        }
+
+        function selectWorld(worldKey) {
+            studentData.currentWorld = worldKey;
+            renderWorldsList();
+            renderStagesGrid();
+        }
+
+        function renderWorldsList() {
+            const container = document.getElementById('worlds-list');
+            container.innerHTML = WORLDS_DATA.map(w => {
+                const isSelected = studentData.currentWorld === w.key;
+                const unlockedStage = studentData.unlockedStages[w.key] || 1;
+                return `
+                    <div onclick="selectWorld('${w.key}')" class="game-card p-4 cursor-pointer transition ${isSelected ? 'bg-pink-50 border-pink-500 ring-2 ring-pink-400' : 'bg-white hover:bg-sky-50'}">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-base font-black text-slate-800">${w.title}</h4>
+                            <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full text-[10px] font-black border border-slate-900">مرحلة ${unlockedStage}/6</span>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 mt-1">${w.desc}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderStagesGrid() {
+            const worldKey = studentData.currentWorld;
+            const worldObj = WORLDS_DATA.find(w => w.key === worldKey);
+            const unlockedMax = studentData.unlockedStages[worldKey] || 1;
+            const completedList = studentData.completedStages[worldKey] || [];
+
+            document.getElementById('current-world-title').innerText = `${worldObj.title} - ${worldObj.desc}`;
+            document.getElementById('world-progress-badge').innerText = `المرحلة الحالية المتاحة: يوم ${unlockedMax}`;
+
+            const grid = document.getElementById('stages-grid');
+            grid.innerHTML = '';
+
+            for (let s = 1; s <= 6; s++) {
+                const isCompleted = completedList.includes(s);
+                const isUnlocked = s <= unlockedMax;
+                let badge = isCompleted ? '✅ منجزة' : (isUnlocked ? '⭐ ابدأ اليوم' : '🔒 مغلق ليوم غد');
+                let bgClass = isCompleted ? 'bg-emerald-100 border-emerald-500 text-emerald-900' : (isUnlocked ? 'bg-amber-50 hover:bg-amber-100 border-slate-900 text-amber-900 cursor-pointer' : 'bg-slate-100 border-slate-300 text-slate-400 opacity-70');
+
+                grid.innerHTML += `
+                    <div onclick="${isUnlocked ? `openMissionModal('${worldKey}', ${s})` : `alert('🌸 عودي غداً يا جميلة وأكملي مهامكِ بكل حماس واستمري في تجميع النجوم لفتح هذا اليوم! ✨')`}" 
+                         class="game-card p-4 text-center rounded-2xl border-2 ${bgClass} transition">
+                        <div class="text-xl font-black mb-1">اليوم ${s}</div>
+                        <div class="text-xs font-bold">${badge}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function openMissionModal(worldKey, stageNum) {
+            const missions = MISSIONS_BY_STAGE[worldKey];
+            const m = missions[stageNum - 1] || missions[0];
+
+            document.getElementById('gm-title').innerText = m.title;
+            document.getElementById('gm-story').innerText = m.story;
+            document.getElementById('gm-icon').innerText = m.type === 'listen' ? '🎧' : '🎮';
+
+            const body = document.getElementById('gm-body');
+            const p = m.payload;
+
+            let passageHtml = p.passage ? `
+                <div class="bg-emerald-50 p-3.5 rounded-2xl text-sm en-font text-left leading-relaxed text-slate-800 mb-3 border-2 border-emerald-300">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-xs font-bold text-emerald-700">Reading Passage:</span>
+                        <button type="button" onclick="speakWord('${p.passage.replace(/'/g, "\\'")}')" class="px-3 py-1 bg-white text-emerald-800 rounded-xl border border-slate-900 font-black text-xs">🔊 استمعي للقطعة</button>
+                    </div>
+                    ${p.passage}
+                </div>` : '';
+
+            let listenChoiceBtn = `
+                <div class="bg-purple-100 p-3 rounded-2xl text-center border-2 border-slate-900 mb-3 flex items-center justify-between">
+                    <span class="text-xs font-black text-purple-900">🎧 مهارة الاستماع الاختيارية:</span>
+                    <button type="button" onclick="speakWord('${p.speakText || p.answer}')" class="px-3.5 py-1.5 bg-purple-600 text-white rounded-xl font-black text-xs game-btn">
+                        🔊 استمع للصوت الآن
+                    </button>
+                </div>
+            `;
+
+            body.innerHTML = `
+                ${passageHtml}
+                ${listenChoiceBtn}
+                <div class="flex items-center justify-between gap-2 bg-sky-50 p-3 rounded-2xl border border-sky-200">
+                    <p class="en-font text-base font-bold text-slate-900">${p.prompt || p.clue}</p>
+                    <button type="button" onclick="speakWord('${(p.prompt || p.answer).replace(/'/g, "\\'")}')" class="px-3 py-1 bg-sky-200 text-sky-950 rounded-xl border border-slate-900 font-black text-xs">🔊 اسمع</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3 en-font">
+                    ${p.options ? p.options.map(opt => `
+                        <button onclick="submitAnswer('${worldKey}', ${stageNum}, ${m.stars}, '${opt}', '${p.answer}', '${p.arabicMeaning}')" class="p-3.5 bg-purple-50 hover:bg-pink-100 rounded-2xl font-bold text-slate-800 game-btn text-center">
+                            ${opt}
+                        </button>
+                    `).join('') : `
+                        <input id="text-answer" type="text" placeholder="اكتبي الإجابة..." class="w-full p-3 rounded-2xl border-2 border-slate-900 text-center en-font font-bold">
+                        <button onclick="submitAnswer('${worldKey}', ${stageNum}, ${m.stars}, document.getElementById('text-answer').value, '${p.answer}', '${p.arabicMeaning}')" class="w-full py-3 bg-emerald-500 text-white font-black game-btn">تحقق من الإجابة ✨</button>
+                    `}
+                </div>
+            `;
+            document.getElementById('mission-modal').classList.remove('hidden');
+            document.getElementById('mission-modal').classList.add('flex');
+        }
+
+        function closeMissionModal() {
+            document.getElementById('mission-modal').classList.add('hidden');
+            document.getElementById('mission-modal').classList.remove('flex');
+        }
+
+        function submitAnswer(worldKey, stageNum, rewardStars, userAns, correctAns, arabicMeaning) {
+            const isCorrect = userAns.trim().toLowerCase() === correctAns.trim().toLowerCase();
+            closeMissionModal();
+
+            if (isCorrect) {
+                soundFX.playWin();
+                studentData.profile.stars += rewardStars;
+                document.getElementById('stat-stars').innerText = studentData.profile.stars;
+
+                if (!studentData.completedStages[worldKey].includes(stageNum)) {
+                    studentData.completedStages[worldKey].push(stageNum);
+                }
+
+                renderStagesGrid();
+                renderWorldsList();
+
+                document.getElementById('celebration-title').innerText = 'أحسنتِ يا بطلة! 🌟';
+                document.getElementById('celebration-desc').innerText = `إجابة صحيحة رائعة! كسبتِ نجمة جديدة ⭐️. عودي غداً يا جميلة واكملي مهامكِ لفتح اليوم التالي!`;
+                document.getElementById('celebration-overlay').classList.remove('hidden');
+            } else {
+                studentData.reviewBox.push({ word: correctAns, meaning: arabicMeaning });
+                document.getElementById('celebration-title').innerText = 'حاولي مرة أخرى! 💪';
+                document.getElementById('celebration-desc').innerText = `إجابة غير دقيقة. تمت إضافة الكلمة والمعنى إلى صندوق المراجعة لتراجعيهما.`;
+                document.getElementById('celebration-overlay').classList.remove('hidden');
+                renderReviewBox();
+            }
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebration-overlay').classList.add('hidden');
+        }
+
+        function renderReviewBox() {
+            const container = document.getElementById('review-words-container');
+            if (!container) return;
+            if (studentData.reviewBox.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-500 bg-amber-50 rounded-2xl border-2 border-dashed border-amber-300 font-bold">صندوق المراجعة فارغ! أنتِ مذهلة! 🌟</div>`;
+                return;
+            }
+            container.innerHTML = studentData.reviewBox.map((item) => `
+                <div class="bg-amber-50 border-2 border-slate-900 p-4 rounded-2xl flex justify-between items-center gap-3">
+                    <div>
+                        <div class="en-font text-lg font-black text-amber-900">${item.word}</div>
+                        <div class="text-xs font-bold text-slate-700">${item.meaning}</div>
+                    </div>
+                    <button onclick="speakWord('${item.word}')" class="px-3 py-1.5 bg-sky-200 text-sky-950 border border-slate-900 rounded-xl font-black text-xs game-btn">🔊 انطق</button>
+                </div>
+            `).join('');
+        }
+
+        function renderTeacherDashboard() {
+            const tbody = document.getElementById('teacher-students-tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td class="p-3 font-black text-slate-800">جود أحمد</td>
+                    <td class="p-3 en-font text-indigo-700">jood</td>
+                    <td class="p-3">5A</td>
+                    <td class="p-3 text-amber-600 font-black">60 ⭐</td>
+                    <td class="p-3 text-teal-600 font-black">2 👑</td>
+                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-black text-[11px]">مستقرة وممتازة</span></td>
+                </tr>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStudentAvatars();
+        });
+    </script>
+</body>
+</html>
