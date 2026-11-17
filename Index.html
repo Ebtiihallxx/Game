@@ -1,0 +1,370 @@
+<!-- ... existing code ... -->
+            <form id="login-form" class="space-y-3 text-right">
+                <div>
+                    <label class="block text-xs font-black text-purple-900 mb-1 mr-1">اسم المستخدم (Username):</label>
+                    <input id="login-username" type="text" required placeholder="أدخلي اسم المستخدم..." class="w-full p-3 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-purple-900 mb-1 mr-1">كلمة المرور (Password):</label>
+                    <input id="login-password" type="password" required placeholder="أدخلي كلمة المرور..." class="w-full p-3 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                </div>
+                <p id="login-error" class="hidden text-xs font-black text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-300 text-center"></p>
+                <button type="submit" id="login-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-base game-btn">
+                    دخول عالم المغامرات 🚀
+                </button>
+            </form>
+
+            <div class="mt-4 flex gap-2">
+                <button type="button" id="quick-student-btn" class="flex-1 py-2.5 bg-pink-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👧🏽 تجربة طالبة (star01)</button>
+                <button type="button" id="quick-teacher-btn" class="flex-1 py-2.5 bg-indigo-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👩‍🏫 دخول المعلمة (خاص)</button>
+            </div>
+        </div>
+    </div>
+<!-- ... existing code ... -->
+        var STORAGE_KEY = 'english_stars_adventure_db_v4';
+        var allStudentsCache = [];
+
+        function loadLocalStudents() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    var parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) allStudentsCache = parsed;
+                }
+            } catch (e) {}
+        }
+
+        function saveLocalStudents() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allStudentsCache));
+            } catch (e) {}
+        }
+
+        loadLocalStudents();
+
+        /* -------- أ. المؤثرات الصوتية والموسيقى (Web Audio API) -------- -->
+<!-- ... existing code ... -->
+        var AVATAR_ITEMS = {
+            skin: [
+                { id: 'fair', label: 'فاتح مشرق', hex: '#ffdfc4', blush: '#fda4af' },
+                { id: 'ivory', label: 'عاجي ناعم', hex: '#ffe8d6', blush: '#f9a8d4' },
+                { id: 'warm', label: 'حنطي دافئ', hex: '#f3c18a', blush: '#fb7185' },
+                { id: 'honey', label: 'عسلي ذهبي', hex: '#e5a96c', blush: '#f43f5e' },
+                { id: 'tan', label: 'قمحي جميل', hex: '#d18e54', blush: '#e11d48' },
+                { id: 'deep', label: 'أسمر ملكي', hex: '#8d5524', blush: '#be123c' }
+            ],
+            hair: [
+                { id: 'buns', label: 'كعكتين توكا السماوية', color: '#2dd4bf', style: 'buns' },
+                { id: 'bangs', label: 'شعر ناعم بغرة', color: '#1e1b4b', style: 'bangs' },
+                { id: 'pigtails', label: 'ضفائر وردية مرحة', color: '#f472b6', style: 'pigtails' },
+                { id: 'curly', label: 'كيرلي كراميل منفوش', color: '#b45309', style: 'curly' },
+                { id: 'long_gold', label: 'شعر ذهبي طويل', color: '#facc15', style: 'long' },
+                { id: 'bob_purple', label: 'قصة بوب بنفسجية', color: '#a855f7', style: 'bob' },
+                { id: 'ponytail', label: 'ذيل حصان مرتفع', color: '#38bdf8', style: 'ponytail' },
+                { id: 'braids_red', label: 'ضفيرتين كرزية', color: '#e11d48', style: 'pigtails' },
+                { id: 'buns_pink', label: 'كعكتين فراولة', color: '#fb7185', style: 'buns' },
+                { id: 'long_mint', label: 'شعر حورية البحر', color: '#34d399', style: 'long' }
+            ],
+            outfit: [
+                { id: 'hoodie', label: 'هودي توكا الوردي', top: '#fbcfe8', accent: '#f43f5e', style: 'hoodie' },
+                { id: 'mint', label: 'أوفرول النعناع', top: '#34d399', accent: '#059669', style: 'overall' },
+                { id: 'princess', label: 'فستان الأميرة البنفسجي', top: '#c084fc', accent: '#fde047', style: 'dress' },
+                { id: 'uniform', label: 'زي النجوم المدرسي', top: '#38bdf8', accent: '#1e1b4b', style: 'uniform' },
+                { id: 'yellow_star', label: 'سويتر الشمس المشرقة', top: '#fde047', accent: '#f97316', style: 'hoodie' },
+                { id: 'cherry_dress', label: 'فستان الكرز الأحمر', top: '#fb7185', accent: '#fff1f2', style: 'dress' },
+                { id: 'sky_overall', label: 'أوفرول السماء الأزرق', top: '#7dd3fc', accent: '#0284c7', style: 'overall' },
+                { id: 'lavender_dress', label: 'فستان الخزامى', top: '#ddd6fe', accent: '#7c3aed', style: 'dress' },
+                { id: 'peach_hoodie', label: 'هودي الخوخ اللطيف', top: '#fed7aa', accent: '#ea580c', style: 'hoodie' },
+                { id: 'royal_navy', label: 'زي القائدة الملكي', top: '#312e81', accent: '#facc15', style: 'uniform' }
+            ],
+            accessory: [
+                { id: 'none', label: 'بدون إكسسوار' },
+                { id: 'crown', label: 'تاج الذهب الملكي 👑' },
+                { id: 'bow', label: 'فيونكة توكا الكبيرة 🎀' },
+                { id: 'glasses', label: 'نظارة النجوم الذكية 👓' },
+                { id: 'headphones', label: 'سماعات الاستماع 🎧' },
+                { id: 'flowers', label: 'إكليل الزهور الربيعي 🌸' },
+                { id: 'wings', label: 'أجنحة الفراشة السحرية 🦋' },
+                { id: 'wand', label: 'عصا النجمة السحرية 🪄' },
+                { id: 'cape', label: 'رداء البطلة الخارقة 🦸‍♀️' },
+                { id: 'cat_ears', label: 'طوق أذني القطة 🐱' }
+            ]
+        };
+<!-- ... existing code ... -->
+        var currentUser = {
+            name: 'طالبة جديدة',
+            username: '',
+            password: '',
+            classRoom: '5A',
+            stars: 0,
+            gems: 0,
+            crowns: 0,
+            unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+            avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+            currentWorld: 'sound_island',
+            unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+            completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+            reviewBox: []
+        };
+
+        function saveCurrentStudentCloud() {
+            if (!currentUser || !currentUser.username) return;
+            var u = currentUser.username.toLowerCase();
+            var idx = allStudentsCache.findIndex(function(s) { return s.username && s.username.toLowerCase() === u; });
+            if (idx !== -1) {
+                allStudentsCache[idx] = JSON.parse(JSON.stringify(currentUser));
+            } else {
+                allStudentsCache.push(JSON.parse(JSON.stringify(currentUser)));
+            }
+            saveLocalStudents();
+        }
+
+        function getBuiltInOrCachedStudent(u, p) {
+            var cached = allStudentsCache.find(function(s) {
+                return s.username && s.username.toLowerCase() === u && String(s.password) === String(p);
+            });
+            if (cached) return JSON.parse(JSON.stringify(cached));
+
+            var match = u.match(/^star(\d{2})$/);
+            if (match) {
+                var num = parseInt(match[1], 10);
+                if (num >= 1 && num <= 76) {
+                    var expectedPass = String(1000 + num * 13);
+                    if (p === expectedPass) {
+                        var classes = ['5A', '5B', '5C'];
+                        return {
+                            name: 'طالبة ' + match[1],
+                            username: u,
+                            password: expectedPass,
+                            classRoom: classes[(num - 1) % 3],
+                            stars: 0,
+                            gems: 0,
+                            crowns: 0,
+                            unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                            avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                            currentWorld: 'sound_island',
+                            unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                            completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                            reviewBox: []
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        window.doLogin = function(user, pass) {
+            soundSystem.playClick();
+            var u = (user || '').trim().toLowerCase();
+            var p = (pass || '').trim();
+            var err = document.getElementById('login-error');
+            if (err) err.classList.add('hidden');
+
+            if (u === 'teacher') {
+                if (p === '0000') {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('student-app').classList.add('hidden');
+                    document.getElementById('teacher-app').classList.remove('hidden');
+                    renderTeacherPanel();
+                    return;
+                } else {
+                    if (err) {
+                        err.textContent = 'كلمة مرور المعلمة غير صحيحة!';
+                        err.classList.remove('hidden');
+                    }
+                    return;
+                }
+            }
+
+            var foundStudent = getBuiltInOrCachedStudent(u, p);
+            if (foundStudent) {
+                currentUser = foundStudent;
+                ensureUserDefaults();
+                saveCurrentStudentCloud();
+                enterStudentMode();
+                return;
+            }
+
+            if (err) {
+                err.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة! تأكدي من البيانات المدخلة.';
+                err.classList.remove('hidden');
+            }
+        };
+
+        function ensureUserDefaults() {
+            if (!currentUser.unlockedItems) currentUser.unlockedItems = { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] };
+            if (!currentUser.avatar) currentUser.avatar = { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' };
+            if (!currentUser.unlocked) currentUser.unlocked = { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 };
+            if (!currentUser.completed) currentUser.completed = { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] };
+            if (!currentUser.reviewBox) currentUser.reviewBox = [];
+        }
+
+        function enterStudentMode() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('teacher-app').classList.add('hidden');
+            document.getElementById('student-app').classList.remove('hidden');
+            updateStudentUI();
+        }
+
+        function doLogout() {
+            soundSystem.playClick();
+            document.getElementById('student-app').classList.add('hidden');
+            document.getElementById('teacher-app').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+        }
+<!-- ... existing code ... -->
+        function generate76CloudAccounts() {
+            soundSystem.playClick();
+            var classes = ['5A', '5B', '5C'];
+            var generated = [];
+            for (var i = 1; i <= 76; i++) {
+                var numStr = i < 10 ? '0' + i : '' + i;
+                var uname = 'star' + numStr;
+                var pass = '' + (1000 + i * 13);
+                var cls = classes[(i - 1) % 3];
+                var studentObj = {
+                    name: 'طالبة ' + numStr,
+                    username: uname,
+                    password: pass,
+                    classRoom: cls,
+                    stars: 0,
+                    gems: 0,
+                    crowns: 0,
+                    unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                    avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                    currentWorld: 'sound_island',
+                    unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                    completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                    reviewBox: []
+                };
+                generated.push(studentObj);
+            }
+            allStudentsCache = generated;
+            saveLocalStudents();
+            renderTeacherPanel();
+            showFeedback('🎉👩‍🏫', 'تم توليد 76 حساباً بنجاح!', 'أصبحت جميع الحسابات صفرية وجاهزة لبدء المنافسة!');
+        }
+
+        function addSingleStudentCloud() {
+            soundSystem.playClick();
+            var name = document.getElementById('new-student-name').value.trim();
+            var uname = document.getElementById('new-student-user').value.trim().toLowerCase();
+            var pass = document.getElementById('new-student-pass').value.trim();
+            var cls = document.getElementById('new-student-class').value;
+            if (!name || !uname || !pass) {
+                showFeedback('⚠️', 'بيانات ناقصة', 'يرجى كتابة اسم الطالبة واسم المستخدم وكلمة المرور.');
+                return;
+            }
+            var studentObj = {
+                name: name,
+                username: uname,
+                password: pass,
+                classRoom: cls,
+                stars: 0,
+                gems: 0,
+                crowns: 0,
+                unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                currentWorld: 'sound_island',
+                unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                reviewBox: []
+            };
+            allStudentsCache.unshift(studentObj);
+            saveLocalStudents();
+            document.getElementById('new-student-name').value = '';
+            document.getElementById('new-student-user').value = '';
+            document.getElementById('new-student-pass').value = '';
+            renderTeacherPanel();
+            showFeedback('✅', 'تمت إضافة الطالبة!', 'تم حفظ حساب (' + name + ') بنجاح.');
+        }
+
+        function copyAccountsForWhatsApp() {
+            soundSystem.playClick();
+            if (allStudentsCache.length === 0) {
+                showFeedback('ℹ️', 'لا توجد حسابات', 'اضغطي على زر توليد 76 حساباً أولاً.');
+                return;
+            }
+            var lines = ['🌟 بيانات الدخول لمنصة English Stars Adventure 🌟', ''];
+            allStudentsCache.forEach(function(st) {
+                lines.push('👤 ' + st.name + ' (' + (st.classRoom || '5A') + ') | المستخدم: ' + st.username + ' | الرمز: ' + st.password);
+            });
+            var text = lines.join('\n');
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showFeedback('📋✅', 'تم النسخ بنجاح!', 'تم نسخ جميع حسابات الطالبات وكلمات المرور للحافظة، يمكنكِ لصقها في الواتساب مباشرة!');
+        }
+
+        /* -------- ي. تهيئة وربط جميع الأزرار عند تحميل الصفحة -------- */
+        function initAppBindings() {
+            refreshAllAvatars();
+
+            var loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    doLogin(document.getElementById('login-username').value, document.getElementById('login-password').value);
+                };
+            }
+
+            document.getElementById('quick-student-btn').onclick = function() {
+                document.getElementById('login-username').value = 'star01';
+                document.getElementById('login-password').value = '1013';
+                doLogin('star01', '1013');
+            };
+
+            document.getElementById('quick-teacher-btn').onclick = function() {
+                var code = prompt('أدخلي رمز دخول المعلمة السري:');
+                if (code !== null) {
+                    doLogin('teacher', code);
+                }
+            };
+
+            document.getElementById('bgm-toggle-btn').onclick = function() {
+                soundSystem.toggleBGM();
+            };
+
+            document.getElementById('student-logout-btn').onclick = doLogout;
+            document.getElementById('teacher-logout-btn').onclick = doLogout;
+
+            document.getElementById('header-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('map-mini-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('studio-avatar-stage').onclick = jumpAvatar;
+            document.getElementById('random-avatar-btn').onclick = randomizeAvatar;
+
+            document.getElementById('tab-btn-map').onclick = function() { switchTab('map'); };
+            document.getElementById('tab-btn-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('tab-btn-review').onclick = function() { switchTab('review'); };
+
+            document.getElementById('close-mission-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('mission-modal').classList.add('hidden');
+            };
+            document.getElementById('close-fb-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('feedback-modal').classList.add('hidden');
+            };
+
+            document.getElementById('gen-76-btn').onclick = generate76CloudAccounts;
+            document.getElementById('add-single-student-btn').onclick = addSingleStudentCloud;
+            document.getElementById('copy-whatsapp-btn').onclick = copyAccountsForWhatsApp;
+            document.getElementById('print-cards-btn').onclick = function() {
+                soundSystem.playClick();
+                window.print();
+            };
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAppBindings);
+        } else {
+            initAppBindings();
+        }
+    </script>
+</body>
+</html>
