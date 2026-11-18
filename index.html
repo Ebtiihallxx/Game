@@ -3,737 +3,1451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Stars Adventure | مغامرات إنجليش ستارز</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>English Stars Adventure ✨ | منصة نجوم الإنجليزية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #e0f2fe; color: #1e1b4b; min-height: 100vh; overflow-x: hidden; }
-        .en-font { font-family: 'Fredoka', cursive, sans-serif; }
-        .toca-bg {
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.85) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(252,211,77,0.35) 0%, transparent 40%),
-                linear-gradient(135deg, #bae6fd 0%, #fbcfe8 50%, #bbf7d0 100%);
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f0f9ff;
+            user-select: none;
+            overflow-x: hidden;
         }
+        .en-font { font-family: 'Fredoka', sans-serif; direction: ltr; }
         .game-card {
-            background: rgba(255, 255, 255, 0.96);
-            border: 3.5px solid #1e1b4b;
-            border-radius: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.2);
+            border: 3px solid #1e1b4b;
+            box-shadow: 0 6px 0 #1e1b4b;
         }
         .game-btn {
-            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 3px solid #1e1b4b;
             box-shadow: 0 4px 0 #1e1b4b;
-            border-radius: 1.25rem;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
-        .game-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #1e1b4b; }
-        .game-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e1b4b; }
-        @keyframes float {
+        .game-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #1e1b4b;
+        }
+        @keyframes floatSlow {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-7px); }
         }
-        .float-slow { animation: float 4s ease-in-out infinite; }
+        .float-anim { animation: floatSlow 3.5s ease-in-out infinite; }
+        @keyframes bouncePop {
+            0%, 100% { transform: scale(1); }
+            40% { transform: scale(1.12) translateY(-10px); }
+            70% { transform: scale(0.95); }
+        }
+        .avatar-jump { animation: bouncePop 0.55s ease; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-cards-area, #printable-cards-area * { visibility: visible; }
+            #printable-cards-area { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
-<body class="toca-bg">
+<body class="bg-gradient-to-b from-sky-200 via-indigo-100 to-purple-100 min-h-screen text-slate-900">
 
-    <!-- شاشة الاحتفال الكبرى -->
-    <div id="celebration-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="game-card bg-white p-8 max-w-sm w-full text-center space-y-4 animate-bounce">
-            <div class="text-6xl">🌟🎉</div>
-            <h2 id="celebration-title" class="text-3xl font-black text-pink-600 en-font">أحسنتِ يا بطلة!</h2>
-            <p id="celebration-desc" class="text-sm font-bold text-slate-700">لقد ربحتِ نجمة جديدة واقتربتِ من فتح المرحلة التالية!</p>
-            <button onclick="closeCelebration()" class="w-full py-3 bg-emerald-400 hover:bg-emerald-500 text-white font-black text-base game-btn">
-                استمرار المغامرة 🚀
-            </button>
-        </div>
-    </div>
-
-    <!-- ==================== 1. شاشة تسجيل الدخول ==================== -->
-    <div id="login-screen" class="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div class="game-card max-w-md w-full p-6 sm:p-8 text-center">
-            <div class="mb-4 float-slow">
-                <div class="inline-block bg-amber-200 px-4 py-1 rounded-full border-2 border-slate-900 text-xs font-black text-amber-900 mb-2">
-                    ✨ TOP STARS 5 • TOCA ADVENTURE ✨
-                </div>
-                <h1 class="en-font text-4xl sm:text-5xl font-black tracking-wide leading-tight">
-                    <span class="text-emerald-500">E</span><span class="text-sky-500">N</span><span class="text-amber-400">G</span><span class="text-pink-500">L</span><span class="text-purple-500">I</span><span class="text-rose-500">S</span><span class="text-teal-500">H</span>
-                </h1>
-                <div class="en-font text-2xl sm:text-3xl font-black text-amber-500 -mt-1">
-                    STARS ADVENTURE 🌟
-                </div>
+    <!-- ================= 1. شاشة تسجيل الدخول ================= -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white/95 backdrop-blur rounded-[36px] p-6 sm:p-8 max-w-md w-full game-card text-center relative overflow-hidden">
+            <div class="inline-block bg-amber-300 border-2 border-slate-900 px-4 py-1 rounded-full text-xs font-black mb-3 shadow-sm">
+                مغامرات الصف الخامس الابتدائي 🌟
             </div>
-
-            <p class="text-xs sm:text-sm font-black text-purple-900 bg-amber-100/90 py-2.5 px-3 rounded-2xl border-2 border-slate-900 mb-5">
-                أهلاً بكِ في مغامرات إنجليش ستارز! أدخلي اسم المستخدم وكلمة المرور 🎀
+            <h1 class="text-2xl sm:text-3xl font-black text-purple-900 en-font tracking-wide mb-1">
+                English Stars Adventure
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 font-bold mb-4">
+                أهلاً بكِ يا نجمة! أدخلي بياناتكِ للانطلاق إلى جزر المغامرة 🏝️✨
             </p>
 
-            <form onsubmit="handleLogin(event)" class="space-y-3.5 text-right">
+            <!-- معاينة الأفاتار في شاشة الدخول -->
+            <div id="login-avatar-preview" class="w-28 h-28 mx-auto mb-4 bg-gradient-to-b from-sky-100 to-pink-100 rounded-full border-4 border-slate-900 flex items-center justify-center shadow-md float-anim overflow-hidden"></div>
+
+            <form id="login-form" class="space-y-3 text-right">
                 <div>
                     <label class="block text-xs font-black text-purple-900 mb-1 mr-1">اسم المستخدم (Username):</label>
-                    <input id="login-username" type="text" required value="jood" class="w-full p-3.5 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                    <input id="login-username" type="text" required placeholder="أدخلي اسم المستخدم..." class="w-full p-3 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-black text-purple-900 mb-1 mr-1">كلمة المرور (Password):</label>
-                    <input id="login-password" type="password" required value="1234" class="w-full p-3.5 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
+                    <input id="login-password" type="password" required placeholder="أدخلي كلمة المرور..." class="w-full p-3 rounded-2xl border-2 border-slate-900 bg-sky-50 font-black text-sm focus:outline-none focus:bg-white">
                 </div>
                 <p id="login-error" class="hidden text-xs font-black text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-300 text-center"></p>
-                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-base game-btn">
+                <button type="submit" id="login-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-base game-btn">
                     دخول عالم المغامرات 🚀
                 </button>
             </form>
+
             <div class="mt-4 flex gap-2">
-                <button onclick="quickLogin('jood', '1234')" class="flex-1 py-2.5 bg-pink-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👧🏽 دخول طالبة (جود)</button>
-                <button onclick="quickLogin('teacher', '123456')" class="flex-1 py-2.5 bg-indigo-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👩‍🏫 دخول المعلمة</button>
+                <button type="button" id="show-qr-btn" class="flex-1 py-2.5 bg-amber-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">📱 باركود الموقع</button>
+                <button type="button" id="quick-teacher-btn" class="flex-1 py-2.5 bg-indigo-100 border-2 border-slate-900 rounded-xl font-black text-xs game-btn">👩‍🏫 دخول المعلمة</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== 2. لوحة الطالبة الرئيسية ==================== -->
-    <div id="student-app" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-5">
-        <header class="game-card p-4 flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center gap-3">
-                <div id="student-header-avatar" class="w-14 h-14 bg-pink-100 rounded-2xl border-2 border-slate-900 flex items-center justify-center overflow-hidden shadow-inner cursor-pointer" onclick="switchStudentTab('avatar')"></div>
-                <div>
-                    <h2 id="student-welcome-name" class="font-black text-base text-pink-600">مرحباً، جود ⭐</h2>
-                    <p class="text-[11px] text-purple-900 font-bold">الصف الخامس • منهج Top Stars 5</p>
-                </div>
+    <!-- نافذة الباركود (QR Code Modal) -->
+    <div id="qr-modal" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[32px] p-6 max-w-sm w-full game-card text-center border-4 border-slate-900 relative">
+            <button type="button" id="close-qr-btn" class="w-9 h-9 rounded-full bg-rose-500 text-white font-black border-2 border-slate-900 absolute top-4 left-4 flex items-center justify-center shadow">✕</button>
+            <div class="inline-block bg-amber-300 border-2 border-slate-900 px-3 py-1 rounded-full text-[11px] font-black mb-2">
+                امسحي الباركود للدخول السريع 📱✨
             </div>
-
-            <div class="flex items-center gap-2.5 flex-wrap">
-                <div class="bg-amber-100 border-2 border-slate-900 text-amber-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
-                    ⭐ <span id="stat-stars">30</span> نجوم
-                </div>
-                <div class="bg-purple-100 border-2 border-slate-900 text-purple-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
-                    💎 <span id="stat-gems">10</span> جواهر
-                </div>
-                <div class="bg-teal-100 border-2 border-slate-900 text-teal-900 px-3 py-1 rounded-full font-black text-xs flex items-center gap-1">
-                    👑 <span id="stat-crowns">1</span> تيجان
-                </div>
-                <button id="bgm-toggle-btn" onclick="toggleBackgroundMusic()" class="bg-sky-100 border-2 border-slate-900 px-2.5 py-1 rounded-full font-black text-sky-900 text-xs game-btn">
-                    🎵 موسيقى هادئة
-                </button>
-                <button onclick="logout()" class="bg-rose-100 border-2 border-slate-900 text-rose-900 px-3 py-1 rounded-full font-black text-xs game-btn">
-                    خروج
-                </button>
+            <h2 class="text-xl font-black text-purple-900 mb-1">English Stars Adventure</h2>
+            <p class="text-xs font-bold text-slate-600 mb-4">وجّهي كاميرا الجوال أو الآيباد نحو الباركود لفتح المنصة</p>
+            <div class="bg-sky-50 p-4 rounded-3xl border-3 border-slate-900 inline-block mb-3 shadow-inner">
+                <img id="site-qr-img" src="" alt="QR Code" class="w-48 h-48 mx-auto rounded-xl bg-white p-2 border-2 border-slate-200">
             </div>
-        </header>
+            <div class="mb-4">
+                <label class="block text-[11px] font-black text-slate-700 mb-1">رابط المنصة (يمكنكِ تعديله لتحديث الباركود):</label>
+                <input id="qr-url-input" type="text" dir="ltr" class="w-full p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50 font-bold text-xs text-center focus:outline-none focus:bg-white">
+            </div>
+            <div class="flex gap-2">
+                <button type="button" id="copy-link-btn" class="flex-1 py-2.5 bg-sky-400 text-slate-900 font-black text-xs rounded-xl game-btn">📋 نسخ الرابط</button>
+                <button type="button" id="enter-login-from-qr-btn" class="flex-1 py-2.5 bg-emerald-400 text-slate-900 font-black text-xs rounded-xl game-btn">دخول المنصة 🚀</button>
+            </div>
+        </div>
+    </div>
 
-        <nav class="flex gap-2 bg-white/80 p-2 rounded-2xl border-2 border-slate-900 shadow-sm overflow-x-auto">
-            <button onclick="switchStudentTab('map')" class="flex-1 min-w-[90px] py-2.5 bg-pink-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
-                🗺️ خريطة الجزر
-            </button>
-            <button onclick="switchStudentTab('avatar')" class="flex-1 min-w-[90px] py-2.5 bg-purple-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
-                👗 الأفاتار
-            </button>
-            <button onclick="switchStudentTab('review')" class="flex-1 min-w-[90px] py-2.5 bg-amber-500 text-white rounded-xl font-black text-xs game-btn flex items-center justify-center gap-1">
-                📦 صندوق المراجعة
-            </button>
-        </nav>
+    <!-- نافذة رمز المعلمة السري -->
+    <div id="teacher-pin-modal" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[32px] p-6 max-w-xs w-full game-card text-center border-4 border-slate-900">
+            <div class="text-4xl mb-2">👩‍🏫🔐</div>
+            <h3 class="text-lg font-black text-purple-900 mb-1">بوابة المعلمة</h3>
+            <p class="text-xs font-bold text-slate-500 mb-3">أدخلي الرمز السري للوصول للوحة التحكم</p>
+            <input id="teacher-pin-input" type="password" inputmode="numeric" placeholder="••••" class="w-full p-3 rounded-2xl border-2 border-slate-900 bg-indigo-50 font-black text-center text-lg tracking-widest mb-3 focus:outline-none focus:bg-white">
+            <p id="teacher-pin-error" class="hidden text-xs font-black text-rose-600 mb-2">الرمز السري غير صحيح!</p>
+            <div class="flex gap-2">
+                <button type="button" id="cancel-teacher-pin-btn" class="flex-1 py-2.5 bg-slate-200 font-black text-xs rounded-xl game-btn">إلغاء</button>
+                <button type="button" id="confirm-teacher-pin-btn" class="flex-1 py-2.5 bg-indigo-500 text-white font-black text-xs rounded-xl game-btn">دخول</button>
+            </div>
+        </div>
+    </div>
 
-        <main>
-            <div id="tab-map" class="space-y-5">
-                <div class="relative w-full h-56 sm:h-64 rounded-3xl overflow-hidden border-3 border-slate-900 shadow-lg bg-gradient-to-b from-sky-200 via-pink-100 to-emerald-200 flex items-center justify-center">
-                    <div class="absolute inset-0 pointer-events-none">
-                        <div class="absolute bottom-0 inset-x-0 h-14 bg-emerald-400 border-t-3 border-slate-900"></div>
-                        <div class="absolute bottom-10 left-6 text-4xl">🌸</div>
-                        <div class="absolute bottom-10 right-8 text-4xl">🍄</div>
-                        <div class="absolute top-10 left-10 text-3xl opacity-80">☁️</div>
-                    </div>
-                    <div id="home-avatar-stage" onclick="triggerAvatarJump()" class="relative z-10 w-44 h-52 cursor-pointer transition-transform duration-300 flex items-center justify-center"></div>
-                    <div class="absolute top-3 left-3 bg-white/95 px-3 py-1.5 rounded-2xl shadow border-2 border-slate-900 flex items-center gap-2">
-                        <span class="text-xl">🦉</span>
-                        <span class="text-[11px] font-black text-purple-900">البومة لولو: اختاري الجزيرة وتتابعي المراحل الـ 6 يوماً بيوم!</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                    <div class="lg:col-span-1 space-y-3" id="worlds-list"></div>
-                    <div class="lg:col-span-2 game-card p-5 space-y-4">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-3">
-                            <h3 id="current-world-title" class="text-xl font-black text-purple-800">📚 Word Island - جزيرة المفردات</h3>
-                            <span id="world-progress-badge" class="bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-black border border-slate-900">المرحلة الحالية: يوم 1</span>
+    <!-- ================= 2. تطبيق الطالبة ================= -->
+    <div id="student-app" class="hidden pb-24">
+        <header class="bg-white/95 backdrop-blur border-b-4 border-slate-900 sticky top-0 z-30 px-3 py-2.5 shadow-sm">
+            <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                    <div id="header-avatar" class="w-12 h-12 rounded-full border-2 border-slate-900 bg-sky-100 overflow-hidden cursor-pointer shadow-sm"></div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span id="student-display-name" class="font-black text-sm sm:text-base text-purple-950">طالبة</span>
+                            <span id="student-class-badge" class="bg-purple-100 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full border border-purple-300">5A</span>
                         </div>
-                        <p class="text-xs font-bold text-slate-600">أنجزي مهمة كل يوم بالترتيب لتنتقل للمرحلة التالية وتفتحي أسرار الجزيرة وتجمعي النجوم!</p>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="stages-grid"></div>
+                        <p class="text-[11px] font-bold text-slate-500">أنجزي كل يوم لفتح ملابس وإكسسوارات جديدة! 🎁</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button type="button" id="bgm-toggle-btn" class="px-2.5 py-1.5 rounded-xl bg-amber-100 border-2 border-slate-900 text-xs font-black flex items-center gap-1 game-btn" title="الموسيقى الهادئة">
+                        <span id="bgm-icon">🔇</span>
+                        <span class="hidden sm:inline">موسيقى</span>
+                    </button>
+                    <div class="bg-amber-300 border-2 border-slate-900 px-2.5 py-1 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1">
+                        <span>⭐</span><span id="stat-stars">0</span>
+                    </div>
+                    <div class="bg-cyan-300 border-2 border-slate-900 px-2.5 py-1 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1">
+                        <span>💎</span><span id="stat-gems">0</span>
+                    </div>
+                    <button type="button" id="student-logout-btn" class="px-2.5 py-1.5 rounded-xl bg-rose-100 text-rose-800 border-2 border-slate-900 text-xs font-black game-btn">خروج</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto p-3 sm:p-5">
+            <!-- تبويب 1: خريطة الجزر الـ 5 -->
+            <section id="tab-map" class="space-y-5">
+                <div class="bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 rounded-[32px] p-4 sm:p-6 game-card relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-lg sm:text-xl font-black text-slate-900">خريطة جزر المغامرة 🗺️✨</h2>
+                            <p class="text-xs font-bold text-slate-700">اضغطي على أي جزيرة لفتح سؤال اليوم المتاح فيها مباشرة!</p>
+                        </div>
+                        <span class="bg-white/90 border-2 border-slate-900 px-3 py-1 rounded-full text-xs font-black">5 جزر • 30 تحدياً</span>
+                    </div>
+
+                    <div id="islands-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 my-4"></div>
+
+                    <div class="mt-3 bg-white/90 backdrop-blur rounded-2xl p-3 border-2 border-slate-900 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div id="map-mini-avatar" class="w-12 h-12 rounded-2xl bg-pink-100 border-2 border-slate-900 overflow-hidden shrink-0 cursor-pointer"></div>
+                            <div>
+                                <p id="current-island-title" class="font-black text-sm text-purple-900">جزيرة الصوت والإملاء 🏝️</p>
+                                <p id="current-island-desc" class="text-xs font-bold text-slate-600">استمعي واكتبي الكلمات الصحيحة</p>
+                            </div>
+                        </div>
+                        <span id="island-progress-pill" class="bg-emerald-300 border-2 border-slate-900 px-3 py-1 rounded-xl font-black text-xs shrink-0">0 / 6</span>
+                    </div>
+                </div>
+
+                <!-- قائمة الأيام (6 أيام للجزيرة المختارة) -->
+                <div class="bg-white rounded-[32px] p-4 sm:p-6 game-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base sm:text-lg font-black text-slate-900">مهام الأيام في الجزيرة 📅</h3>
+                        <span class="text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full">🎁 جائزة أزياء بعد كل يوم!</span>
+                    </div>
+                    <div id="days-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+                </div>
+            </section>
+
+            <!-- تبويب 2: استوديو الأفاتار -->
+            <section id="tab-avatar" class="hidden space-y-5">
+                <div class="bg-white rounded-[32px] p-5 sm:p-6 game-card">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <div>
+                            <h2 class="text-lg sm:text-xl font-black text-purple-950">استوديو الأزياء والأفاتار 👗👑</h2>
+                            <p class="text-xs font-bold text-slate-500">أنجزي مهام الأيام لفتح المزيد من الملابس والتسريحات والإكسسوارات!</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="unlocked-count-badge" class="bg-amber-200 border-2 border-slate-900 px-3 py-1 rounded-xl text-xs font-black">المفتوح: 4 / 36</span>
+                            <button type="button" id="random-avatar-btn" class="px-3 py-1.5 bg-pink-200 border-2 border-slate-900 rounded-xl text-xs font-black game-btn">🎲 عشوائي</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                        <div class="md:col-span-5 flex flex-col items-center">
+                            <div id="studio-avatar-stage" class="w-52 h-52 sm:w-60 sm:h-60 rounded-[36px] bg-gradient-to-b from-sky-200 via-purple-100 to-pink-100 border-4 border-slate-900 flex items-center justify-center shadow-inner cursor-pointer overflow-hidden"></div>
+                            <p class="text-[11px] font-bold text-slate-500 mt-2">اضغطي على الشخصية لتقفز فرحاً! 🦘✨</p>
+                        </div>
+
+                        <div class="md:col-span-7 space-y-3">
+                            <div id="avatar-category-tabs" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
+                            <div id="avatar-items-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-80 overflow-y-auto p-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- تبويب 3: صندوق المراجعة -->
+            <section id="tab-review" class="hidden space-y-5">
+                <div class="bg-white rounded-[32px] p-5 sm:p-6 game-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-lg sm:text-xl font-black text-rose-900">صندوق المراجعة الذكي 📦✨</h2>
+                            <p class="text-xs font-bold text-slate-500">الكلمات التي أخطأتِ بها في الاستماع تُحفظ هنا لتتدربي عليها!</p>
+                        </div>
+                        <span id="review-count-badge" class="bg-rose-200 border-2 border-slate-900 px-3 py-1 rounded-xl font-black text-xs">0 كلمات</span>
+                    </div>
+                    <div id="review-list" class="space-y-3"></div>
+                </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-3 left-3 right-3 max-w-md mx-auto bg-white/95 backdrop-blur border-4 border-slate-900 rounded-3xl p-1.5 flex justify-around shadow-xl z-30">
+            <button type="button" id="tab-btn-map" class="flex-1 py-2 rounded-2xl font-black text-xs sm:text-sm bg-amber-300 border-2 border-slate-900 transition">🗺️ الجزر</button>
+            <button type="button" id="tab-btn-avatar" class="flex-1 py-2 rounded-2xl font-black text-xs sm:text-sm text-slate-700 hover:bg-slate-100 transition">👗 الأزياء</button>
+            <button type="button" id="tab-btn-review" class="flex-1 py-2 rounded-2xl font-black text-xs sm:text-sm text-slate-700 hover:bg-slate-100 transition">📦 المراجعة</button>
+        </nav>
+    </div>
+
+    <!-- ================= 3. نافذة التحدي والأسئلة ================= -->
+    <div id="mission-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-40 flex items-center justify-center p-3 sm:p-5">
+        <div class="bg-white rounded-[32px] p-5 sm:p-7 max-w-lg w-full game-card relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <span id="mission-badge" class="bg-purple-200 border-2 border-slate-900 px-3 py-1 rounded-full text-xs font-black">Day 1</span>
+                <button type="button" id="close-mission-btn" class="w-9 h-9 rounded-full bg-rose-500 text-white font-black border-2 border-slate-900 flex items-center justify-center">✕</button>
+            </div>
+            <div id="mission-body"></div>
+        </div>
+    </div>
+
+    <!-- ================= 4. نافذة التغذية الراجعة والمكافآت ================= -->
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[32px] p-6 max-w-sm w-full game-card text-center">
+            <div id="fb-emoji" class="text-5xl mb-3">🎉</div>
+            <h3 id="fb-title" class="text-xl font-black text-purple-950 mb-1">أحسنتِ!</h3>
+            <p id="fb-desc" class="text-sm font-bold text-slate-600 mb-3">إجابة رائعة!</p>
+            <div id="fb-reward-box" class="hidden bg-gradient-to-r from-amber-100 to-pink-100 border-2 border-slate-900 rounded-2xl p-3 mb-4">
+                <p class="text-xs font-black text-purple-900 mb-1">🎁 هدية الإنجاز الجديدة للأفاتار:</p>
+                <p id="fb-unlocked-item-name" class="text-sm font-black text-rose-600"></p>
+            </div>
+            <button type="button" id="close-fb-btn" class="w-full py-3 bg-emerald-400 text-slate-900 font-black rounded-2xl game-btn">متابعة ✨</button>
+        </div>
+    </div>
+
+    <!-- ================= 5. لوحة تحكم المعلمة ================= -->
+    <div id="teacher-app" class="hidden min-h-screen p-3 sm:p-6">
+        <div class="max-w-5xl mx-auto space-y-5">
+            <div class="bg-white rounded-[32px] p-5 game-card flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black text-purple-950">لوحة تحكم المعلمة إبتهال 👩‍🏫✨</h1>
+                    <p class="text-xs sm:text-sm font-bold text-slate-500">متابعة تقدم الطالبات وتوليد حسابات الـ 76 طالبة</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="gen-76-btn" class="px-4 py-2.5 bg-amber-300 font-black text-xs sm:text-sm rounded-2xl game-btn">⚡ توليد 76 حساباً</button>
+                    <button type="button" id="copy-whatsapp-btn" class="px-4 py-2.5 bg-emerald-400 font-black text-xs sm:text-sm rounded-2xl game-btn">📋 نسخ للواتساب</button>
+                    <button type="button" id="print-cards-btn" class="px-4 py-2.5 bg-sky-300 font-black text-xs sm:text-sm rounded-2xl game-btn">🖨️ طباعة البطاقات</button>
+                    <button type="button" id="teacher-logout-btn" class="px-4 py-2.5 bg-rose-400 text-white font-black text-xs sm:text-sm rounded-2xl game-btn">خروج</button>
+                </div>
+            </div>
+
+            <!-- إضافة طالبة جديدة -->
+            <div class="bg-white rounded-[32px] p-5 game-card">
+                <h2 class="text-base font-black text-slate-900 mb-3">إضافة حساب طالبة جديدة ➕</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <input id="new-student-name" type="text" placeholder="اسم الطالبة (مثال: سارة أحمد)" class="p-3 rounded-xl border-2 border-slate-900 text-xs font-bold">
+                    <input id="new-student-user" type="text" placeholder="اسم المستخدم (مثال: sara5)" class="p-3 rounded-xl border-2 border-slate-900 text-xs font-bold">
+                    <input id="new-student-pass" type="text" placeholder="كلمة المرور (مثال: 1122)" class="p-3 rounded-xl border-2 border-slate-900 text-xs font-bold">
+                    <div class="flex gap-2">
+                        <select id="new-student-class" class="p-3 rounded-xl border-2 border-slate-900 text-xs font-black bg-sky-50">
+                            <option value="5A">5A</option>
+                            <option value="5B">5B</option>
+                            <option value="5C">5C</option>
+                        </select>
+                        <button type="button" id="add-single-student-btn" class="flex-1 bg-purple-600 text-white font-black text-xs rounded-xl game-btn">إضافة</button>
                     </div>
                 </div>
             </div>
 
-            <div id="tab-avatar" class="hidden game-card p-5 space-y-4">
-                <div class="text-center">
-                    <h2 class="text-2xl font-black text-pink-600">👗 استوديو توكا بوكا للأفاتار</h2>
-                    <p class="text-xs font-bold text-slate-600">خصصي شخصيتكِ الكرتونية بالكامل وشاهديها تتغير فوراً!</p>
+            <!-- جدول الطالبات -->
+            <div id="printable-cards-area" class="bg-white rounded-[32px] p-5 game-card">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-base font-black text-slate-900">قائمة الطالبات المسجلات (<span id="teacher-total-count">0</span>)</h2>
+                    <span id="cloud-sync-badge" class="text-xs font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-400">☁️ متصل بالسحابة ومُزامن</span>
                 </div>
-                <div class="relative w-full h-56 rounded-3xl overflow-hidden border-3 border-slate-900 bg-gradient-to-b from-pink-100 to-purple-100 flex items-center justify-center">
-                    <div id="studio-avatar-stage" onclick="triggerAvatarJump()" class="w-48 h-52 cursor-pointer transition-transform duration-300 flex items-center justify-center"></div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-purple-100 border-b-2 border-slate-900">
+                                <th class="p-3 font-black">اسم الطالبة</th>
+                                <th class="p-3 font-black">الفصل</th>
+                                <th class="p-3 font-black">اسم المستخدم</th>
+                                <th class="p-3 font-black">كلمة المرور</th>
+                                <th class="p-3 font-black">النجوم ⭐</th>
+                                <th class="p-3 font-black">الأيام المنجزة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-students-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
                 </div>
-                <div class="space-y-3 bg-purple-50 p-4 rounded-2xl border-2 border-purple-200" id="avatar-customizer-controls"></div>
-            </div>
-
-            <div id="tab-review" class="hidden game-card p-5 space-y-4">
-                <div class="text-center">
-                    <h2 class="text-2xl font-black text-amber-600">📦 صندوق مراجعة الكلمات والفاقد</h2>
-                    <p class="text-xs font-bold text-slate-600">الكلمات التي أخطأتِ فيها مع معانيها العربية لتراجعيتها وحفظها بسهولة!</p>
-                </div>
-                <div id="review-words-container" class="space-y-3"></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- نافذة المهمة واللعبة -->
-    <div id="mission-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-40">
-        <div class="game-card bg-white p-6 max-w-lg w-full shadow-2xl relative text-right">
-            <button onclick="closeMissionModal()" class="absolute top-4 left-4 text-slate-400 hover:text-rose-500 text-xl font-bold">✕</button>
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-3xl" id="gm-icon">🎮</span>
-                <div>
-                    <h3 id="gm-title" class="text-lg font-black text-purple-800">مهمة اليوم</h3>
-                    <p id="gm-story" class="text-xs font-bold text-slate-500">قصة المهمة...</p>
-                </div>
-            </div>
-            <div id="gm-body" class="mt-4 space-y-3"></div>
-        </div>
-    </div>
-
-    <!-- لوحة المعلمة -->
-    <div id="teacher-app" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-5">
-        <header class="game-card p-4 flex justify-between items-center bg-indigo-50">
-            <div>
-                <h2 class="text-2xl font-black text-indigo-800">👩‍🏫 لوحة تحكم المعلمة المتكاملة</h2>
-                <p class="text-xs font-bold text-slate-600">متابعة طالبات الصف الخامس (5A, 5B, 5C)، تقدم المراحل، ومعالجة الفاقد التعليمي</p>
-            </div>
-            <button onclick="logout()" class="bg-rose-100 border-2 border-slate-900 text-rose-900 px-3.5 py-1.5 rounded-full font-black text-xs game-btn">تسجيل الخروج</button>
-        </header>
-        <div class="game-card p-5 space-y-4">
-            <h3 class="text-lg font-black text-indigo-900">سجل طالبات الصف الخامس الابتدائي</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-indigo-100 text-indigo-900 font-black">
-                        <tr>
-                            <th class="p-3 rounded-r-xl">اسم الطالبة</th>
-                            <th class="p-3">اسم المستخدم</th>
-                            <th class="p-3">الفصل</th>
-                            <th class="p-3">النجوم</th>
-                            <th class="p-3">التيجان</th>
-                            <th class="p-3 rounded-l-xl">الحالة التعليمية</th>
-                        </tr>
-                    </thead>
-                    <tbody id="teacher-students-tbody" class="divide-y divide-slate-100 font-bold"></tbody>
-                </table>
             </div>
         </div>
     </div>
 
-    <!-- البرمجية ومنطق الألعاب -->
-    <script>
-        const soundFX = {
+    <!-- ================= 6. البرمجة الكاملة والمنطق ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        var allStudentsCache = [];
+        var cloudDb = null;
+        var cloudUser = null;
+        var appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        async function initCloudStorage() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+                var firebaseConfig = JSON.parse(__firebase_config);
+                var app = initializeApp(firebaseConfig);
+                var auth = getAuth(app);
+                cloudDb = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    var cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    cloudUser = cred.user;
+                } else {
+                    var anonCred = await signInAnonymously(auth);
+                    cloudUser = anonCred.user;
+                }
+
+                if (!cloudUser) return;
+                var studentsCol = collection(cloudDb, 'artifacts', appId, 'public', 'data', 'students');
+                onSnapshot(studentsCol, function(snapshot) {
+                    var list = [];
+                    snapshot.forEach(function(docSnap) {
+                        list.push(docSnap.data());
+                    });
+                    allStudentsCache = list;
+
+                    if (currentUser && currentUser.username) {
+                        var updatedMe = allStudentsCache.find(function(s) {
+                            return s.username && s.username.toLowerCase() === currentUser.username.toLowerCase();
+                        });
+                        if (updatedMe && !document.getElementById('student-app').classList.contains('hidden')) {
+                            currentUser = JSON.parse(JSON.stringify(updatedMe));
+                            updateStudentUI();
+                        }
+                    }
+
+                    if (!document.getElementById('teacher-app').classList.contains('hidden')) {
+                        renderTeacherPanel();
+                    }
+                }, function(err) {
+                    console.error('Cloud sync error:', err);
+                });
+            } catch (e) {
+                console.error('Cloud init fallback:', e);
+            }
+        }
+
+        async function saveStudentToCloud(studentObj) {
+            if (!cloudDb || !cloudUser || !studentObj || !studentObj.username) return;
+            try {
+                var docId = studentObj.username.toLowerCase();
+                var studentRef = doc(cloudDb, 'artifacts', appId, 'public', 'data', 'students', docId);
+                await setDoc(studentRef, JSON.parse(JSON.stringify(studentObj)));
+            } catch (e) {
+                console.error('Save student error:', e);
+            }
+        }
+
+        initCloudStorage();
+
+        /* -------- أ. المؤثرات الصوتية والموسيقى (Web Audio API) -------- */
+        var soundSystem = {
             ctx: null,
-            enabled: true,
-            bgmEnabled: false,
+            bgmPlaying: false,
             bgmTimer: null,
-            noteStep: 0,
-            init() {
+            init: function() {
                 if (!this.ctx) {
-                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    var AudioCtx = window.AudioContext || window.webkitAudioContext;
                     if (AudioCtx) this.ctx = new AudioCtx();
                 }
-                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
             },
-            startCalmBGM() {
-                if (!this.bgmEnabled || this.bgmTimer) return;
-                this.init();
-                const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46];
-                this.bgmTimer = setInterval(() => {
-                    if (!this.bgmEnabled || !this.ctx || document.hidden) return;
-                    const freq = melody[this.noteStep % melody.length];
-                    this.noteStep++;
-                    const now = this.ctx.currentTime;
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.001, now);
-                    gain.gain.linearRampToValueAtTime(0.022, now + 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.75);
+            playTone: function(freq, type, duration, vol) {
+                try {
+                    this.init();
+                    if (!this.ctx) return;
+                    var osc = this.ctx.createOscillator();
+                    var gain = this.ctx.createGain();
+                    osc.type = type || 'sine';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol || 0.12, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.8);
-                }, 800);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
             },
-            stopCalmBGM() {
-                if (this.bgmTimer) { clearInterval(this.bgmTimer); this.bgmTimer = null; }
+            playClick: function() {
+                this.playTone(580, 'triangle', 0.09, 0.1);
             },
-            playWin() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                    gain.gain.setValueAtTime(0.12, now + idx * 0.06);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.2);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + idx * 0.06);
-                    osc.stop(now + idx * 0.06 + 0.2);
+            playJump: function() {
+                this.playTone(340, 'sine', 0.12, 0.12);
+                var self = this;
+                setTimeout(function() { self.playTone(620, 'sine', 0.16, 0.12); }, 70);
+            },
+            playSuccess: function() {
+                var notes = [523.25, 659.25, 783.99, 1046.50];
+                var self = this;
+                notes.forEach(function(n, idx) {
+                    setTimeout(function() { self.playTone(n, 'triangle', 0.25, 0.14); }, idx * 90);
                 });
             },
-            playJump() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(320, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(650, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
+            playError: function() {
+                this.playTone(220, 'sawtooth', 0.2, 0.09);
+                var self = this;
+                setTimeout(function() { self.playTone(175, 'sawtooth', 0.25, 0.09); }, 120);
+            },
+            toggleBGM: function() {
+                this.bgmPlaying = !this.bgmPlaying;
+                var icon = document.getElementById('bgm-icon');
+                if (icon) icon.textContent = this.bgmPlaying ? '🎵' : '🔇';
+                if (this.bgmPlaying) {
+                    this.init();
+                    var melody = [523.25, 659.25, 587.33, 783.99, 659.25, 523.25, 587.33, 493.88];
+                    var step = 0;
+                    var self = this;
+                    this.bgmTimer = setInterval(function() {
+                        if (!self.bgmPlaying) return;
+                        self.playTone(melody[step % melody.length], 'sine', 0.45, 0.035);
+                        step++;
+                    }, 650);
+                } else {
+                    clearInterval(this.bgmTimer);
+                }
             }
         };
 
-        function toggleBackgroundMusic() {
-            soundFX.bgmEnabled = !soundFX.bgmEnabled;
-            const btn = document.getElementById('bgm-toggle-btn');
-            if (soundFX.bgmEnabled) {
-                soundFX.startCalmBGM();
-                if (btn) btn.innerText = '🔊 الموسيقى تعمل';
-            } else {
-                soundFX.stopCalmBGM();
-                if (btn) btn.innerText = '🎵 موسيقى هادئة';
-            }
+        function speakEnglish(text) {
+            try {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    var utter = new SpeechSynthesisUtterance(text);
+                    utter.lang = 'en-US';
+                    utter.rate = 0.85;
+                    utter.pitch = 1.1;
+                    window.speechSynthesis.speak(utter);
+                }
+            } catch (e) {}
         }
 
-        function speakWord(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
+        /* -------- ب. بيانات الجزر الـ 5 و الـ 30 تحدياً -------- */
+        var WORLDS_DATA = [
+            {
+                id: 'sound_island',
+                title: 'Sound Island',
+                arTitle: 'جزيرة الصوت والإملاء',
+                desc: 'استمعي للكلمة واكتبي حروفها بدقة',
+                emoji: '🎧',
+                color: 'from-amber-200 to-orange-300',
+                days: [
+                    { day: 1, title: 'Listen & Spell 1', type: 'dictation', word: 'apple', hint: 'A sweet red or green fruit.' },
+                    { day: 2, title: 'Listen & Spell 2', type: 'dictation', word: 'school', hint: 'A place where we learn and study.' },
+                    { day: 3, title: 'Listen & Spell 3', type: 'dictation', word: 'friend', hint: 'Someone you like to play with.' },
+                    { day: 4, title: 'Listen & Spell 4', type: 'dictation', word: 'planet', hint: 'Earth and Mars are in space.' },
+                    { day: 5, title: 'Listen & Spell 5', type: 'dictation', word: 'library', hint: 'A quiet room full of books.' },
+                    { day: 6, title: 'Listen & Spell 6', type: 'dictation', word: 'dolphin', hint: 'A smart animal that swims in the sea.' }
+                ]
+            },
+            {
+                id: 'word_island',
+                title: 'Word Island',
+                arTitle: 'جزيرة المفردات',
+                desc: 'تحديات الكلمات والصور الممتعة',
+                emoji: '🌴',
+                color: 'from-emerald-200 to-teal-300',
+                days: [
+                    { day: 1, title: 'Daily Routine', type: 'mcq', question: 'What do you do in the morning before school?', options: ['Eat breakfast', 'Go to sleep', 'Watch night stars'], answer: 'Eat breakfast' },
+                    { day: 2, title: 'Weather Words', type: 'mcq', question: 'When it rains, what should you carry?', options: ['An umbrella', 'Sunglasses', 'A snowboard'], answer: 'An umbrella' },
+                    { day: 3, title: 'School Subjects', type: 'mcq', question: 'In which subject do we draw and paint?', options: ['Art', 'Math', 'Science'], answer: 'Art' },
+                    { day: 4, title: 'Healthy Food', type: 'mcq', question: 'Which one is a healthy vegetable?', options: ['Carrot', 'Candy', 'Soda'], answer: 'Carrot' },
+                    { day: 5, title: 'Wild Animals', type: 'mcq', question: 'Which animal has a very long neck?', options: ['Giraffe', 'Penguin', 'Turtle'], answer: 'Giraffe' },
+                    { day: 6, title: 'Jobs & Helpers', type: 'mcq', question: 'Who helps sick people in a hospital?', options: ['Doctor', 'Pilot', 'Chef'], answer: 'Doctor' }
+                ]
+            },
+            {
+                id: 'story_city',
+                title: 'Story City',
+                arTitle: 'مدينة القصص',
+                desc: 'اقرئي القصة القصيرة واكتشفي الإجابة',
+                emoji: '🏰',
+                color: 'from-pink-200 to-rose-300',
+                days: [
+                    { day: 1, title: 'Sara’s Cat', type: 'mcq', story: 'Sara has a small white cat named Snowy. Snowy loves drinking milk every morning.', question: 'What color is Sara’s cat?', options: ['White', 'Black', 'Brown'], answer: 'White' },
+                    { day: 2, title: 'The Space Trip', type: 'mcq', story: 'Ali looked through his telescope at night. He saw the bright yellow moon and five shining stars.', question: 'What did Ali use to look at the sky?', options: ['A telescope', 'A microscope', 'A camera'], answer: 'A telescope' },
+                    { day: 3, title: 'Picnic Day', type: 'mcq', story: 'On Friday, Nora and her family went to the green park. They ate sandwiches and played football.', question: 'Where did Nora’s family go?', options: ['To the park', 'To the mall', 'To the beach'], answer: 'To the park' },
+                    { day: 4, title: 'The Lost Key', type: 'mcq', story: 'Omar looked for his blue key everywhere. Finally, he found it under his school bag.', question: 'Where was the blue key?', options: ['Under the school bag', 'On the table', 'In the garden'], answer: 'Under the school bag' },
+                    { day: 5, title: 'Helping Mom', type: 'mcq', story: 'Lina helped her mother bake a chocolate cake for her little brother’s birthday.', question: 'What kind of cake did they bake?', options: ['Chocolate cake', 'Strawberry cake', 'Vanilla cake'], answer: 'Chocolate cake' },
+                    { day: 6, title: 'The Rainy Afternoon', type: 'mcq', story: 'It was raining outside, so Majed stayed home and read an exciting story about dinosaurs.', question: 'What was Majed’s story about?', options: ['Dinosaurs', 'Robots', 'Pirates'], answer: 'Dinosaurs' }
+                ]
+            },
+            {
+                id: 'grammar_cavern',
+                title: 'Grammar Cavern',
+                arTitle: 'كهف القواعد',
+                desc: 'أتقني قواعد اللغة الإنجليزية بذكاء',
+                emoji: '🔮',
+                color: 'from-purple-200 to-indigo-300',
+                days: [
+                    { day: 1, title: 'Verb to Be', type: 'mcq', question: 'She ___ a clever student in Grade 5.', options: ['is', 'are', 'am'], answer: 'is' },
+                    { day: 2, title: 'Plural Nouns', type: 'mcq', question: 'There are three red ___ on the desk.', options: ['books', 'book', 'a book'], answer: 'books' },
+                    { day: 3, title: 'Present Continuous', type: 'mcq', question: 'They are ___ football in the playground now.', options: ['playing', 'play', 'played'], answer: 'playing' },
+                    { day: 4, title: 'Pronouns', type: 'mcq', question: 'This is my brother. ___ name is Faisal.', options: ['His', 'Her', 'Their'], answer: 'His' },
+                    { day: 5, title: 'Prepositions', type: 'mcq', question: 'The cat is sleeping ___ the sofa.', options: ['on', 'between', 'into'], answer: 'on' },
+                    { day: 6, title: 'Can / Can’t', type: 'mcq', question: 'Birds have wings, so they ___ fly high.', options: ['can', 'can’t', 'are'], answer: 'can' }
+                ]
+            },
+            {
+                id: 'quiz_arena',
+                title: 'Quiz Arena',
+                arTitle: 'حلبة الأبطال',
+                desc: 'تحديات شاملة للنجوم المتفوقات',
+                emoji: '🏆',
+                color: 'from-sky-200 to-cyan-300',
+                days: [
+                    { day: 1, title: 'Spell the Animal', type: 'dictation', word: 'rabbit', hint: 'A cute animal with long ears that loves carrots.' },
+                    { day: 2, title: 'Opposite Words', type: 'mcq', question: 'What is the opposite of "Hot"?', options: ['Cold', 'Fast', 'Big'], answer: 'Cold' },
+                    { day: 3, title: 'Days of the Week', type: 'mcq', question: 'Which day comes after Sunday?', options: ['Monday', 'Friday', 'Wednesday'], answer: 'Monday' },
+                    { day: 4, title: 'Listen & Write', type: 'dictation', word: 'garden', hint: 'A place outside with flowers and green grass.' },
+                    { day: 5, title: 'Time & Clock', type: 'mcq', question: 'How many hours are there in one day?', options: ['24 hours', '12 hours', '60 hours'], answer: '24 hours' },
+                    { day: 6, title: 'Champion Crown', type: 'mcq', question: 'Choose the correct sentence:', options: ['I like learning English!', 'I likes learning English!', 'I liking English!'], answer: 'I like learning English!' }
+                ]
             }
-        }
-
-        const AVATAR_CATALOG = {
-            skin: [
-                { id: 'skin_fair', label: 'فاتح', hex: '#ffdfc4', blush: '#fda4af' },
-                { id: 'skin_warm', label: 'حنطي', hex: '#f3c18a', blush: '#fb7185' },
-                { id: 'skin_tan', label: 'قمحي', hex: '#d99b66', blush: '#f43f5e' }
-            ],
-            hair: [
-                { id: 'hair_toca_buns', label: 'كعكتين توكا السماوي', color: '#5eead4', style: 'toca_buns' },
-                { id: 'hair_toca_bangs', label: 'شعر أسود بغرة', color: '#1e1b4b', style: 'toca_bangs' },
-                { id: 'hair_pink', label: 'ضفائر وردية', color: '#f472b6', style: 'pigtails' }
-            ],
-            outfit: [
-                { id: 'dress_toca_hoodie', label: 'سويتر توكا الوردي', top: '#fbcfe8', bottom: '#1e293b', style: 'hoodie' },
-                { id: 'dress_mint', label: 'طقم النعناع', top: '#34d399', bottom: '#334155', style: 'hoodie' },
-                { id: 'dress_purple', label: 'فستان الأميرة', top: '#c084fc', bottom: '#9333ea', style: 'dress' }
-            ],
-            accessory: [
-                { id: 'acc_none', label: 'بدون' },
-                { id: 'acc_crown', label: 'تاج ذهبي ملكي' },
-                { id: 'acc_bow', label: 'فيونكة توكا الكبيرة' }
-            ]
-        };
-
-        const WORLDS_DATA = [
-            { key: 'word_island', title: '📚 Word Island', desc: 'جزيرة المفردات' },
-            { key: 'grammar_castle', title: '🏰 Grammar Castle', desc: 'قلعة القواعد' },
-            { key: 'reading_forest', title: '🌳 Reading Forest', desc: 'غابة القراءة' },
-            { key: 'writing_garden', title: '🌸 Writing Garden', desc: 'حديقة الكتابة' },
-            { key: 'spelling_sky', title: '☁️ Spelling Sky', desc: 'سماء الإملاء' }
         ];
 
-        const MISSIONS_BY_STAGE = {
-            'word_island': [
-                { stage: 1, type: 'mcq', title: 'اليوم 1: المفردات الأساسية', story: 'تعرفي على الجنسية الصحيحة:', payload: { prompt: 'She is from Saudi Arabia. She is _______.', options: ['Saudi', 'Kuwaiti', 'British', 'Italian'], answer: 'Saudi', arabicMeaning: 'Saudi = سعودية' }, stars: 1 },
-                { stage: 2, type: 'listen', title: 'اليوم 2: استمع و اختر المكان المناسب 🔊', story: 'استمعي للكلمة واختاري معناها الصحيح:', payload: { speakText: 'Hospital', prompt: 'Listen and choose the correct place:', options: ['Hospital', 'School', 'Park', 'Supermarket'], answer: 'Hospital', arabicMeaning: 'Hospital = مستشفى' }, stars: 1 },
-                { stage: 3, type: 'mcq', title: 'اليوم 3: الوظائف والمهن', story: 'اختاري الوظيفة المناسبة للصورة:', payload: { prompt: 'He works in a hospital and helps sick people. He is a _______.', options: ['Teacher', 'Doctor', 'Pilot', 'Chef'], answer: 'Doctor', arabicMeaning: 'Doctor = طبيب' }, stars: 1 },
-                { stage: 4, type: 'listen', title: 'اليوم 4: استمع وتعرف على الأشياء 🔊', story: 'استمعي واكتشفي الكلمة:', payload: { speakText: 'Computer', prompt: 'Listen to audio:', options: ['Computer', 'Book', 'Pencil', 'Bag'], answer: 'Computer', arabicMeaning: 'Computer = حاسوب' }, stars: 1 },
-                { stage: 5, type: 'mcq', title: 'اليوم 5: الأطعمة والمشروبات', story: 'ما هي الأكلة المفضلة في الفطور؟', payload: { prompt: 'I like to eat _______ with milk in the morning.', options: ['cereal', 'fish', 'soup', 'meat'], answer: 'cereal', arabicMeaning: 'cereal = حبوب الفطور' }, stars: 1 },
-                { stage: 6, title: 'اليوم 6: تحدي جزيرة المفردات الشامل', type: 'mcq', story: 'التحدي النهائي للجزيرة!', payload: { prompt: 'The opposite of "hot" is _______.', options: ['cold', 'warm', 'sunny', 'wet'], answer: 'cold', arabicMeaning: 'cold = بارد' }, stars: 1 }
+        /* -------- ج. عناصر استوديو الأفاتار (36 عنصراً متنوعاً) -------- */
+        var AVATAR_ITEMS = {
+            skin: [
+                { id: 'fair', label: 'فاتح مشرق', hex: '#ffdfc4', blush: '#fda4af' },
+                { id: 'ivory', label: 'عاجي ناعم', hex: '#ffe8d6', blush: '#f9a8d4' },
+                { id: 'warm', label: 'حنطي دافئ', hex: '#f3c18a', blush: '#fb7185' },
+                { id: 'honey', label: 'عسلي ذهبي', hex: '#e5a96c', blush: '#f43f5e' },
+                { id: 'tan', label: 'قمحي جميل', hex: '#d18e54', blush: '#e11d48' },
+                { id: 'deep', label: 'أسمر ملكي', hex: '#8d5524', blush: '#be123c' }
             ],
-            'grammar_castle': [
-                { stage: 1, type: 'fill_blank', title: 'اليوم 1: ضمائر الفاعل و Verb to Be', story: 'أكملي الجملة بشكل صحيح:', payload: { prompt: 'They _______ happy students in Grade 5.', options: ['is', 'am', 'are'], answer: 'are', arabicMeaning: 'They يأخذ الفعل are للجمع' }, stars: 1 },
-                { stage: 2, type: 'mcq', title: 'اليوم 2: المضارع البسيط (Present Simple)', story: 'اختاري الفعل الصحيح مع المفرد:', payload: { prompt: 'Omar _______ football every afternoon.', options: ['play', 'plays', 'playing'], answer: 'plays', arabicMeaning: 'مع المفرد الغائب نضيف s للفعل' }, stars: 1 },
-                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر القاعدة الصحيحة 🔊', story: 'استمعي للجملة وحددي الزمن:', payload: { speakText: 'She reads books', prompt: 'Listen to the correct sentence:', options: ['She reads books', 'She read book', 'She reading book'], answer: 'She reads books', arabicMeaning: 'مضارع بسيط يعبر عن العادات' }, stars: 1 },
-                { stage: 4, type: 'mcq', title: 'اليوم 4: تكوين الأسئلة (Do / Does)', story: 'اختاري الفعل المساعد المناسب:', payload: { prompt: '_______ you like English?', options: ['Do', 'Does', 'Is', 'Are'], answer: 'Do', arabicMeaning: 'الضمير You يأخذ Do في السؤال' }, stars: 1 },
-                { stage: 5, type: 'fill_blank', title: 'اليوم 5: حروف الجر (In / On / At)', story: 'حددي حرف الجر المناسب للوقت:', payload: { prompt: 'I get up _______ 7 o’clock in the morning.', options: ['at', 'on', 'in'], answer: 'at', arabicMeaning: 'نستخدم at مع الساعات المحددة' }, stars: 1 },
-                { stage: 6, title: 'اليوم 6: تحدي قلعة القواعد الشامل', type: 'mcq', story: 'اختبار القلعة النهائي!', payload: { prompt: 'We _______ to school yesterday.', options: ['go', 'went', 'going'], answer: 'went', arabicMeaning: 'went هو الماضي البسيط من go' }, stars: 1 }
+            hair: [
+                { id: 'buns', label: 'كعكتين توكا السماوية', color: '#2dd4bf', style: 'buns' },
+                { id: 'bangs', label: 'شعر ناعم بغرة', color: '#1e1b4b', style: 'bangs' },
+                { id: 'pigtails', label: 'ضفائر وردية مرحة', color: '#f472b6', style: 'pigtails' },
+                { id: 'curly', label: 'كيرلي كراميل منفوش', color: '#b45309', style: 'curly' },
+                { id: 'long_gold', label: 'شعر ذهبي طويل', color: '#facc15', style: 'long' },
+                { id: 'bob_purple', label: 'قصة بوب بنفسجية', color: '#a855f7', style: 'bob' },
+                { id: 'ponytail', label: 'ذيل حصان مرتفع', color: '#38bdf8', style: 'ponytail' },
+                { id: 'braids_red', label: 'ضفيرتين كرزية', color: '#e11d48', style: 'pigtails' },
+                { id: 'buns_pink', label: 'كعكتين فراولة', color: '#fb7185', style: 'buns' },
+                { id: 'long_mint', label: 'شعر حورية البحر', color: '#34d399', style: 'long' }
             ],
-            'reading_forest': [
-                { stage: 1, type: 'mcq', title: 'اليوم 1: قراءة وفهم الروتين اليومي', story: 'اقرئي القطعة بعناية:', payload: { passage: 'Hello! My name is Maha. I wake up at six o’clock every morning. I eat a healthy breakfast and go to school by bus.', prompt: 'How does Maha go to school?', options: ['By car', 'By bus', 'On foot', 'By bike'], answer: 'By bus', arabicMeaning: 'go to school by bus = تذهب بالحافلة' }, stars: 1 },
-                { stage: 2, type: 'mcq', title: 'اليوم 2: قراءة قصة أصدقاء المدرسة', story: 'اقرئي وأجيبي:', payload: { passage: 'Ahmed and Ali are best friends. They love playing football in the school playground after classes finish.', prompt: 'What do Ahmed and Ali love doing?', options: ['Playing football', 'Reading books', 'Swimming', 'Drawing'], answer: 'Playing football', arabicMeaning: 'playing football = لعب كرة القدم' }, stars: 1 },
-                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واقرأ النص القصير 🔊', story: 'استمعي للنص الصوتي:', payload: { speakText: 'The weather is sunny and warm today', prompt: 'Listen and choose the weather description:', options: ['The weather is sunny and warm today', 'It is raining heavily', 'It is very cold'], answer: 'The weather is sunny and warm today', arabicMeaning: 'طقس مشمس ودافئ' }, stars: 1 },
-                { stage: 4, type: 'mcq', title: 'اليوم 4: قراءة عن الحيوانات', story: 'اقرئي المعلومة:', payload: { passage: 'The camel is a wonderful animal. It lives in the desert and can walk on sand easily without water for many days.', prompt: 'Where does the camel live?', options: ['In the desert', 'In the sea', 'In the forest', 'In the city'], answer: 'In the desert', arabicMeaning: 'in the desert = في الصحراء' }, stars: 1 },
-                { stage: 5, type: 'mcq', title: 'اليوم 5: قراءة عن الهوايات', story: 'اقرئي القطعة:', payload: { passage: 'Sara likes reading adventure stories in the library every Thursday afternoon.', prompt: 'Where does Sara read stories?', options: ['In the library', 'At home', 'In the park', 'At school'], answer: 'In the library', arabicMeaning: 'in the library = في المكتبة' }, stars: 1 },
-                { stage: 6, title: 'اليوم 6: تحدي غابة القراءة الشامل', type: 'mcq', story: 'التحدي النهائي للقراءة!', payload: { passage: 'We visited the museum last week and saw amazing old things.', prompt: 'When did they visit the museum?', options: ['Last week', 'Yesterday', 'Tomorrow', 'Next year'], answer: 'Last week', arabicMeaning: 'last week = الأسبوع الماضي' }, stars: 1 }
+            outfit: [
+                { id: 'hoodie', label: 'هودي توكا الوردي', top: '#fbcfe8', accent: '#f43f5e', style: 'hoodie' },
+                { id: 'mint', label: 'أوفرول النعناع', top: '#34d399', accent: '#059669', style: 'overall' },
+                { id: 'princess', label: 'فستان الأميرة البنفسجي', top: '#c084fc', accent: '#fde047', style: 'dress' },
+                { id: 'uniform', label: 'زي النجوم المدرسي', top: '#38bdf8', accent: '#1e1b4b', style: 'uniform' },
+                { id: 'yellow_star', label: 'سويتر الشمس المشرقة', top: '#fde047', accent: '#f97316', style: 'hoodie' },
+                { id: 'cherry_dress', label: 'فستان الكرز الأحمر', top: '#fb7185', accent: '#fff1f2', style: 'dress' },
+                { id: 'sky_overall', label: 'أوفرول السماء الأزرق', top: '#7dd3fc', accent: '#0284c7', style: 'overall' },
+                { id: 'lavender_dress', label: 'فستان الخزامى', top: '#ddd6fe', accent: '#7c3aed', style: 'dress' },
+                { id: 'peach_hoodie', label: 'هودي الخوخ اللطيف', top: '#fed7aa', accent: '#ea580c', style: 'hoodie' },
+                { id: 'royal_navy', label: 'زي القائدة الملكي', top: '#312e81', accent: '#facc15', style: 'uniform' }
             ],
-            'writing_garden': [
-                { stage: 1, type: 'mcq', title: 'اليوم 1: اختيار الجملة الصحيحة إملائياً', story: 'اختاري الترتيب الصحيح للجملة:', payload: { prompt: 'Choose the correct sentence:', options: ['I like learning English', 'English like I learning', 'Learning I english like'], answer: 'I like learning English', arabicMeaning: 'I like learning English = أنا أحب تعلم الإنجليزية' }, stars: 1 },
-                { stage: 2, type: 'mcq', title: 'اليوم 2: بناء الجملة اليومية', story: 'اختاري الجملة الصحيحة:', payload: { prompt: 'Choose the correct daily routine sentence:', options: ['I get up early', 'Up early get I', 'Early I get up'], answer: 'I get up early', arabicMeaning: 'I get up early = أنا أستيقظ مبكراً' }, stars: 1 },
-                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر الجملة المكتوبة بدقة 🔊', story: 'استمعي للجملة الإنجليزية:', payload: { speakText: 'My favorite subject is English', prompt: 'Listen and choose the sentence you hear:', options: ['My favorite subject is English', 'I like math class', 'Science is fun'], answer: 'My favorite subject is English', arabicMeaning: 'مادتي المفضلة هي الإنجليزية' }, stars: 1 },
-                { stage: 4, type: 'mcq', title: 'اليوم 4: كتابة التعبير عن الهواية', story: 'اختاري التعبير الأصح:', payload: { prompt: 'Choose the correct sentence about playing sports:', options: ['We play football every Friday', 'Play football we friday every', 'Every friday football play we'], answer: 'We play football every Friday', arabicMeaning: 'نلعب كرة القدم كل جمعة' }, stars: 1 },
-                { stage: 5, type: 'mcq', title: 'اليوم 5: الجملة الوصفية الصحيحة', story: 'اختاري الترتيب الأصح:', payload: { prompt: 'Choose the correct sentence:', options: ['Our school is big', 'Big school is our', 'Is school our big'], answer: 'Our school is big', arabicMeaning: 'مدرستنا كبيرة' }, stars: 1 },
-                { stage: 6, title: 'اليوم 6: تحدي حديقة الكتابة الشامل', type: 'mcq', story: 'التحدي النهائي للكتابة!', payload: { prompt: 'Choose the correct sentence:', options: ['I am very happy', 'Very happy am i', 'Am i very happy'], answer: 'I am very happy', arabicMeaning: 'أنا سعيد جداً' }, stars: 1 }
-            ],
-            'spelling_sky': [
-                { stage: 1, type: 'mcq', title: 'اليوم 1: تهجئة كلمة مدرسة (School)', story: 'اختر التهجئة الإملائية الصحيحة للكلمة:', payload: { prompt: 'Which word is spelled correctly for (مدرسة)?', options: ['school', 'skool', 'scholl', 'shcool'], answer: 'school', arabicMeaning: 'school = مدرسة' }, stars: 1 },
-                { stage: 2, type: 'mcq', title: 'اليوم 2: تهجئة كلمة كتاب (Book)', story: 'اختاري التهجئة الصحيحة:', payload: { prompt: 'Which spelling is correct for (كتاب)?', options: ['book', 'bok', 'bouk', 'buuk'], answer: 'book', arabicMeaning: 'book = كتاب' }, stars: 1 },
-                { stage: 3, type: 'listen', title: 'اليوم 3: استمع واختر الكلمة المتهجأة صحيحة 🔊', story: 'استمعي للصوت واختاري الكلمة الصحيحة إملائياً:', payload: { speakText: 'Teacher', prompt: 'Listen to the word:', options: ['Teacher', 'Techer', 'Tichor', 'Teecher'], answer: 'Teacher', arabicMeaning: 'Teacher = معلم / معلمة' }, stars: 1 },
-                { stage: 4, type: 'mcq', title: 'اليوم 4: تهجئة كلمة صديق (Friend)', story: 'اختاري التهجئة الإملائية الدقيقة:', payload: { prompt: 'Choose the correct spelling for (صديق):', options: ['friend', 'freind', 'frind', 'frend'], answer: 'friend', arabicMeaning: 'friend = صديق' }, stars: 1 },
-                { stage: 5, type: 'mcq', title: 'اليوم 5: تهجئة كلمة عائلة (Family)', story: 'اختاري التهجئة الصحيحة:', payload: { prompt: 'Choose the correct spelling for (عائلة):', options: ['family', 'famly', 'famely', 'familey'], answer: 'family', arabicMeaning: 'family = عائلة' }, stars: 1 },
-                { stage: 6, title: 'اليوم 6: تحدي سماء الإملاء الشامل', story: 'التحدي النهائي للإملاء والتهجئة!', payload: { prompt: 'Choose the correct spelling for (طائر):', options: ['bird', 'berd', 'byrd', 'bierd'], answer: 'bird', arabicMeaning: 'bird = طائر' }, stars: 1 }
+            accessory: [
+                { id: 'none', label: 'بدون إكسسوار' },
+                { id: 'crown', label: 'تاج الذهب الملكي 👑' },
+                { id: 'bow', label: 'فيونكة توكا الكبيرة 🎀' },
+                { id: 'glasses', label: 'نظارة النجوم الذكية 👓' },
+                { id: 'headphones', label: 'سماعات الاستماع 🎧' },
+                { id: 'flowers', label: 'إكليل الزهور الربيعي 🌸' },
+                { id: 'wings', label: 'أجنحة الفراشة السحرية 🦋' },
+                { id: 'wand', label: 'عصا النجمة السحرية 🪄' },
+                { id: 'cape', label: 'رداء البطلة الخارقة 🦸‍♀️' },
+                { id: 'cat_ears', label: 'طوق أذني القطة 🐱' }
             ]
         };
 
-        let studentData = {
-            profile: { stars: 30, gems: 10, crowns: 1, avatar_config: { skin: 'skin_fair', hair: 'hair_toca_buns', outfit: 'dress_toca_hoodie', accessory: 'acc_crown' } },
-            currentWorld: 'word_island',
-            unlockedStages: { word_island: 1, grammar_castle: 1, reading_forest: 1, writing_garden: 1, spelling_sky: 1 },
-            completedStages: { word_island: [], grammar_castle: [], reading_forest: [], writing_garden: [], spelling_sky: [] },
+        /* -------- د. بيانات المستخدم الحالية (صفرية عند البداية) -------- */
+        var currentUser = {
+            name: 'طالبة جديدة',
+            username: '',
+            password: '',
+            classRoom: '5A',
+            stars: 0,
+            gems: 0,
+            crowns: 0,
+            unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+            avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+            currentWorld: 'sound_island',
+            unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+            completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
             reviewBox: []
         };
 
-        function buildTocaAvatarSVG(cfg) {
-            const skin = AVATAR_CATALOG.skin.find(s => s.id === (cfg?.skin || 'skin_fair')) || AVATAR_CATALOG.skin[0];
-            const hair = AVATAR_CATALOG.hair.find(h => h.id === (cfg?.hair || 'hair_toca_buns')) || AVATAR_CATALOG.hair[0];
-            const outfit = AVATAR_CATALOG.outfit.find(o => o.id === (cfg?.outfit || 'dress_toca_hoodie')) || AVATAR_CATALOG.outfit[0];
-            const acc = cfg?.accessory || 'acc_none';
-
-            let backHair = `<rect x="44" y="22" width="24" height="36" rx="12" transform="rotate(-18 56 40)" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>
-                            <rect x="132" y="22" width="24" height="36" rx="12" transform="rotate(18 144 40)" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>
-                            <path d="M52 86 C48 122 60 134 100 134 C140 134 152 122 148 86 Z" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5"/>`;
-            let frontHair = `<path d="M50 86 C50 44 150 44 150 86 C136 74 118 72 100 82 C82 72 64 74 50 86 Z" fill="${hair.color}" stroke="#1e1b4b" stroke-width="4.5" stroke-linejoin="round"/>`;
-
-            let accSvg = '';
-            if (acc === 'acc_crown') accSvg = `<polygon points="78,46 84,26 94,38 100,22 106,38 116,26 122,46" fill="#facc15" stroke="#1e1b4b" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="37" r="3" fill="#f43f5e"/>`;
-            if (acc === 'acc_bow') accSvg = `<g transform="translate(132, 50) rotate(22)"><polygon points="0,0 -18,-12 -18,12" fill="#f43f5e" stroke="#1e1b4b" stroke-width="3.5"/><circle cx="0" cy="0" r="6" fill="#fde047" stroke="#1e1b4b" stroke-width="3"/></g>`;
-
-            return `<svg viewBox="0 0 200 225" class="w-full h-full drop-shadow-md">
-                <ellipse cx="100" cy="212" rx="46" ry="9" fill="rgba(30,27,75,0.18)"/>
-                ${backHair}
-                <rect x="48" y="144" width="22" height="34" rx="11" transform="rotate(24 59 161)" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
-                <circle cx="51" cy="176" r="8" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4"/>
-                <rect x="130" y="144" width="22" height="34" rx="11" transform="rotate(-24 141 161)" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
-                <circle cx="149" cy="176" r="8" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4"/>
-                <ellipse cx="84" cy="204" rx="14" ry="8" fill="#334155" stroke="#1e1b4b" stroke-width="4"/>
-                <ellipse cx="116" cy="204" rx="14" ry="8" fill="#334155" stroke="#1e1b4b" stroke-width="4"/>
-                <rect x="68" y="140" width="64" height="44" rx="16" fill="${outfit.top}" stroke="#1e1b4b" stroke-width="4.5"/>
-                <ellipse cx="100" cy="96" rx="50" ry="46" fill="${skin.hex}" stroke="#1e1b4b" stroke-width="4.5"/>
-                <ellipse cx="72" cy="108" rx="8" ry="5" fill="${skin.blush}" opacity="0.75"/>
-                <ellipse cx="128" cy="108" rx="8" ry="5" fill="${skin.blush}" opacity="0.75"/>
-                <circle cx="80" cy="98" r="6.5" fill="#1e1b4b"/><circle cx="78" cy="96" r="2.2" fill="#ffffff"/>
-                <circle cx="120" cy="98" r="6.5" fill="#1e1b4b"/><circle cx="118" cy="96" r="2.2" fill="#ffffff"/>
-                <path d="M91 112 Q100 123 109 112 Z" fill="#fb7185" stroke="#1e1b4b" stroke-width="3.5" stroke-linejoin="round"/>
-                ${frontHair}
-                ${accSvg}
-            </svg>`;
+        function saveCurrentStudentCloud() {
+            if (!currentUser || !currentUser.username) return;
+            var u = currentUser.username.toLowerCase();
+            var idx = allStudentsCache.findIndex(function(s) { return s.username && s.username.toLowerCase() === u; });
+            if (idx !== -1) {
+                allStudentsCache[idx] = JSON.parse(JSON.stringify(currentUser));
+            } else {
+                allStudentsCache.push(JSON.parse(JSON.stringify(currentUser)));
+            }
+            saveStudentToCloud(currentUser);
         }
 
-        function triggerAvatarJump() {
-            soundFX.playJump();
-            ['home-avatar-stage', 'studio-avatar-stage', 'student-header-avatar'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.style.transform = 'translateY(-20px) scale(1.06)';
-                    setTimeout(() => { el.style.transform = 'translateY(0px) scale(1)'; }, 250);
+        function getBuiltInOrCachedStudent(u, p) {
+            var cached = allStudentsCache.find(function(s) {
+                return s.username && s.username.toLowerCase() === u && String(s.password) === String(p);
+            });
+            if (cached) return JSON.parse(JSON.stringify(cached));
+
+            var match = u.match(/^star(\d{2})$/);
+            if (match) {
+                var num = parseInt(match[1], 10);
+                if (num >= 1 && num <= 76) {
+                    var expectedPass = String(1000 + num * 13);
+                    if (p === expectedPass) {
+                        var classes = ['5A', '5B', '5C'];
+                        return {
+                            name: 'طالبة ' + match[1],
+                            username: u,
+                            password: expectedPass,
+                            classRoom: classes[(num - 1) % 3],
+                            stars: 0,
+                            gems: 0,
+                            crowns: 0,
+                            unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                            avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                            currentWorld: 'sound_island',
+                            unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                            completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                            reviewBox: []
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        window.doLogin = function(user, pass) {
+            soundSystem.playClick();
+            var u = (user || '').trim().toLowerCase();
+            var p = (pass || '').trim();
+            var err = document.getElementById('login-error');
+            if (err) err.classList.add('hidden');
+
+            if (u === 'teacher') {
+                if (p === '0000') {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('student-app').classList.add('hidden');
+                    document.getElementById('teacher-app').classList.remove('hidden');
+                    renderTeacherPanel();
+                    return;
+                } else {
+                    if (err) {
+                        err.textContent = 'كلمة مرور المعلمة غير صحيحة!';
+                        err.classList.remove('hidden');
+                    }
+                    return;
+                }
+            }
+
+            var foundStudent = getBuiltInOrCachedStudent(u, p);
+            if (foundStudent) {
+                currentUser = foundStudent;
+                ensureUserDefaults();
+                saveCurrentStudentCloud();
+                enterStudentMode();
+                return;
+            }
+
+            if (err) {
+                err.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة! تأكدي من البيانات المدخلة.';
+                err.classList.remove('hidden');
+            }
+        };
+
+        function ensureUserDefaults() {
+            if (!currentUser.unlockedItems) currentUser.unlockedItems = { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] };
+            if (!currentUser.avatar) currentUser.avatar = { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' };
+            if (!currentUser.unlocked) currentUser.unlocked = { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 };
+            if (!currentUser.completed) currentUser.completed = { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] };
+            if (!currentUser.reviewBox) currentUser.reviewBox = [];
+        }
+
+        function enterStudentMode() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('teacher-app').classList.add('hidden');
+            document.getElementById('student-app').classList.remove('hidden');
+            updateStudentUI();
+        }
+
+        function doLogout() {
+            soundSystem.playClick();
+            document.getElementById('student-app').classList.add('hidden');
+            document.getElementById('teacher-app').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+        }
+
+        /* -------- هـ. رسم الأفاتار الكرتوني SVG بكل تفاصيله -------- */
+        function renderAvatarSVG(av) {
+            var config = av || currentUser.avatar || { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' };
+            var skinObj = AVATAR_ITEMS.skin.find(function(s) { return s.id === config.skin; }) || AVATAR_ITEMS.skin[0];
+            var hairObj = AVATAR_ITEMS.hair.find(function(h) { return h.id === config.hair; }) || AVATAR_ITEMS.hair[0];
+            var outfitObj = AVATAR_ITEMS.outfit.find(function(o) { return o.id === config.outfit; }) || AVATAR_ITEMS.outfit[0];
+            var acc = config.accessory || 'none';
+
+            var backLayers = '';
+            if (acc === 'wings') {
+                backLayers += '<path d="M40 125 C10 95, 10 155, 48 150 Z" fill="#f9a8d4" stroke="#1e1b4b" stroke-width="4"/><path d="M160 125 C190 95, 190 155, 152 150 Z" fill="#f9a8d4" stroke="#1e1b4b" stroke-width="4"/>';
+            }
+            if (acc === 'cape') {
+                backLayers += '<path d="M52 135 L30 198 L170 198 L148 135 Z" fill="#ef4444" stroke="#1e1b4b" stroke-width="4"/>';
+            }
+            if (hairObj.style === 'long') {
+                backLayers += '<path d="M46 85 Q38 155 50 185 L150 185 Q162 155 154 85 Z" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            } else if (hairObj.style === 'bob') {
+                backLayers += '<path d="M44 82 Q38 135 55 148 L145 148 Q162 135 156 82 Z" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            } else if (hairObj.style === 'pigtails') {
+                backLayers += '<circle cx="38" cy="112" r="20" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/><circle cx="162" cy="112" r="20" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            } else if (hairObj.style === 'ponytail') {
+                backLayers += '<path d="M135 55 Q180 65 170 125 Q155 115 142 85 Z" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            } else if (hairObj.style === 'curly') {
+                backLayers += '<circle cx="46" cy="95" r="18" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/><circle cx="154" cy="95" r="18" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/><circle cx="45" cy="122" r="16" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/><circle cx="155" cy="122" r="16" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            }
+
+            var topHair = '';
+            if (hairObj.style === 'buns') {
+                topHair += '<circle cx="55" cy="48" r="20" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/><circle cx="145" cy="48" r="20" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+            }
+            topHair += '<path d="M48 92 C48 42, 152 42, 152 92 C135 74, 115 74, 100 84 C85 74, 65 74, 48 92 Z" fill="' + hairObj.color + '" stroke="#1e1b4b" stroke-width="4"/>';
+
+            var outfitSVG = '<path d="M54 142 C54 128, 146 128, 146 142 L156 198 L44 198 Z" fill="' + outfitObj.top + '" stroke="#1e1b4b" stroke-width="4"/>';
+            if (outfitObj.style === 'overall') {
+                outfitSVG += '<rect x="68" y="146" width="64" height="52" rx="8" fill="' + outfitObj.accent + '" stroke="#1e1b4b" stroke-width="3"/><circle cx="76" cy="154" r="4" fill="#fde047"/><circle cx="124" cy="154" r="4" fill="#fde047"/>';
+            } else if (outfitObj.style === 'dress') {
+                outfitSVG += '<path d="M72 136 L100 156 L128 136" fill="none" stroke="' + outfitObj.accent + '" stroke-width="5"/><circle cx="100" cy="168" r="7" fill="' + outfitObj.accent + '" stroke="#1e1b4b" stroke-width="2"/>';
+            } else if (outfitObj.style === 'uniform') {
+                outfitSVG += '<path d="M78 134 L100 162 L122 134 Z" fill="#ffffff" stroke="#1e1b4b" stroke-width="3"/><path d="M95 146 L105 146 L102 174 L98 174 Z" fill="' + outfitObj.accent + '"/>';
+            } else {
+                outfitSVG += '<path d="M84 140 Q100 155 116 140" fill="none" stroke="' + outfitObj.accent + '" stroke-width="4"/><circle cx="100" cy="166" r="8" fill="' + outfitObj.accent + '"/>';
+            }
+
+            var accSVG = '';
+            if (acc === 'crown') {
+                accSVG = '<path d="M72 46 L78 24 L92 38 L100 20 L108 38 L122 24 L128 46 Z" fill="#facc15" stroke="#1e1b4b" stroke-width="3.5"/>';
+            } else if (acc === 'bow') {
+                accSVG = '<path d="M100 44 L78 30 L78 56 Z M100 44 L122 30 L122 56 Z" fill="#fb7185" stroke="#1e1b4b" stroke-width="3.5"/><circle cx="100" cy="44" r="7" fill="#ffe4e6" stroke="#1e1b4b" stroke-width="3"/>';
+            } else if (acc === 'glasses') {
+                accSVG = '<circle cx="80" cy="96" r="14" fill="rgba(255,255,255,0.35)" stroke="#1e1b4b" stroke-width="3.5"/><circle cx="120" cy="96" r="14" fill="rgba(255,255,255,0.35)" stroke="#1e1b4b" stroke-width="3.5"/><line x1="94" y1="96" x2="106" y2="96" stroke="#1e1b4b" stroke-width="3.5"/>';
+            } else if (acc === 'headphones') {
+                accSVG = '<path d="M44 92 C44 36, 156 36, 156 92" fill="none" stroke="#38bdf8" stroke-width="8"/><rect x="34" y="80" width="14" height="28" rx="7" fill="#f43f5e" stroke="#1e1b4b" stroke-width="3"/><rect x="152" y="80" width="14" height="28" rx="7" fill="#f43f5e" stroke="#1e1b4b" stroke-width="3"/>';
+            } else if (acc === 'flowers') {
+                accSVG = '<circle cx="72" cy="52" r="7" fill="#f472b6" stroke="#1e1b4b" stroke-width="2.5"/><circle cx="100" cy="48" r="8" fill="#fde047" stroke="#1e1b4b" stroke-width="2.5"/><circle cx="128" cy="52" r="7" fill="#60a5fa" stroke="#1e1b4b" stroke-width="2.5"/>';
+            } else if (acc === 'cat_ears') {
+                accSVG = '<path d="M60 54 L68 28 L86 48 Z" fill="#1e1b4b"/><path d="M140 54 L132 28 L114 48 Z" fill="#1e1b4b"/>';
+            } else if (acc === 'wand') {
+                accSVG = '<line x1="162" y1="185" x2="178" y2="125" stroke="#92400e" stroke-width="5"/><polygon points="178,112 182,122 192,122 184,128 187,138 178,132 169,138 172,128 164,122 174,122" fill="#facc15" stroke="#1e1b4b" stroke-width="2"/>';
+            }
+
+            return '<svg viewBox="0 0 200 200" class="w-full h-full">' +
+                backLayers +
+                '<rect x="90" y="122" width="20" height="22" rx="8" fill="' + skinObj.hex + '" stroke="#1e1b4b" stroke-width="4"/>' +
+                outfitSVG +
+                '<circle cx="48" cy="98" r="9" fill="' + skinObj.hex + '" stroke="#1e1b4b" stroke-width="3.5"/>' +
+                '<circle cx="152" cy="98" r="9" fill="' + skinObj.hex + '" stroke="#1e1b4b" stroke-width="3.5"/>' +
+                '<rect x="50" y="48" width="100" height="86" rx="44" fill="' + skinObj.hex + '" stroke="#1e1b4b" stroke-width="4"/>' +
+                topHair +
+                '<circle cx="80" cy="96" r="7" fill="#1e1b4b"/><circle cx="82" cy="93" r="2.5" fill="#ffffff"/>' +
+                '<circle cx="120" cy="96" r="7" fill="#1e1b4b"/><circle cx="122" cy="93" r="2.5" fill="#ffffff"/>' +
+                '<ellipse cx="67" cy="108" rx="8" ry="4.5" fill="' + skinObj.blush + '" opacity="0.65"/>' +
+                '<ellipse cx="133" cy="108" rx="8" ry="4.5" fill="' + skinObj.blush + '" opacity="0.65"/>' +
+                '<path d="M91 112 Q100 121 109 112" fill="none" stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round"/>' +
+                accSVG +
+            '</svg>';
+        }
+
+        function refreshAllAvatars() {
+            var svg = renderAvatarSVG(currentUser.avatar);
+            ['login-avatar-preview', 'header-avatar', 'map-mini-avatar', 'studio-avatar-stage'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.innerHTML = svg;
+            });
+        }
+
+        /* -------- و. فتح مكافأة أزياء تلقائية بعد إنجاز أي يوم -------- */
+        function unlockNextRewardItem() {
+            ensureUserDefaults();
+            var categories = ['outfit', 'hair', 'accessory', 'skin'];
+            for (var c = 0; c < categories.length; c++) {
+                var cat = categories[c];
+                var allList = AVATAR_ITEMS[cat];
+                var owned = currentUser.unlockedItems[cat] || [];
+                for (var i = 0; i < allList.length; i++) {
+                    if (owned.indexOf(allList[i].id) === -1) {
+                        owned.push(allList[i].id);
+                        currentUser.unlockedItems[cat] = owned;
+                        currentUser.avatar[cat] = allList[i].id;
+                        return allList[i].label;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /* -------- ز. تحديث واجهة الطالبة والخريطة والأيام -------- */
+        function updateStudentUI() {
+            ensureUserDefaults();
+            document.getElementById('student-display-name').textContent = currentUser.name;
+            document.getElementById('student-class-badge').textContent = currentUser.classRoom || '5A';
+            document.getElementById('stat-stars').textContent = currentUser.stars || 0;
+            document.getElementById('stat-gems').textContent = currentUser.gems || 0;
+
+            refreshAllAvatars();
+            renderIslandsMap();
+            renderDaysForWorld(currentUser.currentWorld || 'sound_island');
+            renderAvatarStudio();
+            renderReviewBox();
+        }
+
+        function renderIslandsMap() {
+            var grid = document.getElementById('islands-grid');
+            grid.innerHTML = '';
+            WORLDS_DATA.forEach(function(world) {
+                var isSelected = currentUser.currentWorld === world.id;
+                var doneCount = (currentUser.completed[world.id] || []).length;
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'p-3 rounded-3xl bg-gradient-to-b ' + world.color + ' border-3 border-slate-900 text-center transition transform hover:scale-105 ' + (isSelected ? 'ring-4 ring-amber-400 shadow-lg' : 'opacity-95');
+                btn.innerHTML = '<div class="text-3xl sm:text-4xl mb-1">' + world.emoji + '</div>' +
+                    '<div class="font-black text-xs sm:text-sm text-slate-900 en-font">' + world.title + '</div>' +
+                    '<div class="text-[11px] font-bold text-slate-800">' + world.arTitle + '</div>' +
+                    '<div class="mt-1.5 inline-block bg-white/90 px-2 py-0.5 rounded-full text-[10px] font-black border border-slate-900">' + doneCount + '/6 ⭐</div>';
+                btn.onclick = function() {
+                    soundSystem.playClick();
+                    currentUser.currentWorld = world.id;
+                    renderIslandsMap();
+                    renderDaysForWorld(world.id);
+                    var maxUnlocked = currentUser.unlocked[world.id] || 1;
+                    var targetDayObj = world.days.find(function(d) { return d.day === maxUnlocked; }) || world.days[0];
+                    openMissionModal(world, targetDayObj);
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderDaysForWorld(worldId) {
+            var world = WORLDS_DATA.find(function(w) { return w.id === worldId; }) || WORLDS_DATA[0];
+            document.getElementById('current-island-title').textContent = world.arTitle + ' ' + world.emoji;
+            document.getElementById('current-island-desc').textContent = world.desc;
+
+            var completedArr = currentUser.completed[world.id] || [];
+            var maxUnlocked = currentUser.unlocked[world.id] || 1;
+            document.getElementById('island-progress-pill').textContent = completedArr.length + ' / 6';
+
+            var grid = document.getElementById('days-grid');
+            grid.innerHTML = '';
+
+            world.days.forEach(function(d) {
+                var isDone = completedArr.indexOf(d.day) !== -1;
+                var isUnlocked = d.day <= maxUnlocked;
+                var card = document.createElement('button');
+                card.type = 'button';
+
+                if (isDone) {
+                    card.className = 'p-4 rounded-2xl bg-emerald-100 border-3 border-slate-900 text-right game-btn relative';
+                    card.innerHTML = '<div class="flex justify-between items-center mb-1"><span class="font-black text-xs bg-emerald-400 px-2.5 py-0.5 rounded-full border border-slate-900">Day ' + d.day + '</span><span class="text-lg">✅⭐</span></div>' +
+                        '<div class="font-black text-sm text-slate-900 en-font">' + d.title + '</div>' +
+                        '<div class="text-[11px] font-bold text-emerald-800 mt-1">مكتمل! اضغطي للإعادة</div>';
+                    card.onclick = function() { openMissionModal(world, d); };
+                } else if (isUnlocked) {
+                    card.className = 'p-4 rounded-2xl bg-amber-100 border-3 border-slate-900 text-right game-btn relative';
+                    card.innerHTML = '<div class="flex justify-between items-center mb-1"><span class="font-black text-xs bg-amber-300 px-2.5 py-0.5 rounded-full border border-slate-900">Day ' + d.day + '</span><span class="text-lg">🔓✨</span></div>' +
+                        '<div class="font-black text-sm text-slate-900 en-font">' + d.title + '</div>' +
+                        '<div class="text-[11px] font-bold text-amber-900 mt-1">ابدئي التحدي الآن!</div>';
+                    card.onclick = function() { openMissionModal(world, d); };
+                } else {
+                    card.className = 'p-4 rounded-2xl bg-slate-100 border-2 border-slate-400 text-right opacity-70 cursor-not-allowed';
+                    card.innerHTML = '<div class="flex justify-between items-center mb-1"><span class="font-black text-xs bg-slate-300 px-2.5 py-0.5 rounded-full">Day ' + d.day + '</span><span class="text-lg">🔒</span></div>' +
+                        '<div class="font-black text-sm text-slate-600 en-font">' + d.title + '</div>' +
+                        '<div class="text-[11px] font-bold text-slate-500 mt-1">أنجزي اليوم السابق لفتحه</div>';
+                    card.onclick = function() {
+                        soundSystem.playError();
+                        showFeedback('🔒', 'المرحلة مقفلة حالياً', 'أنجزي اليوم رقم ' + (d.day - 1) + ' أولاً ليفتح لكِ هذا التحدي!');
+                    };
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        /* -------- ح. تشغيل الأسئلة والتحديات التفاعلية -------- */
+        function openMissionModal(world, dayObj) {
+            soundSystem.playClick();
+            var modal = document.getElementById('mission-modal');
+            var badge = document.getElementById('mission-badge');
+            var body = document.getElementById('mission-body');
+
+            badge.textContent = world.title + ' • Day ' + dayObj.day;
+            modal.classList.remove('hidden');
+
+            if (dayObj.type === 'dictation') {
+                body.innerHTML =
+                    '<div class="text-center space-y-4">' +
+                        '<div class="inline-block bg-amber-100 border-2 border-slate-900 px-4 py-1.5 rounded-2xl font-black text-xs en-font">Listening & Spelling Challenge 🎧</div>' +
+                        '<p class="text-sm font-bold text-slate-700 en-font bg-sky-50 p-3 rounded-2xl border-2 border-sky-200">💡 Hint: ' + dayObj.hint + '</p>' +
+                        '<button type="button" id="listen-word-btn" class="mx-auto px-6 py-3.5 bg-gradient-to-r from-sky-400 to-blue-500 text-white font-black rounded-2xl game-btn flex items-center gap-2 text-base">' +
+                            '<span>🔊</span><span class="en-font">Listen to the Word</span>' +
+                        '</button>' +
+                        '<div>' +
+                            '<input id="dictation-input" type="text" autocomplete="off" placeholder="Type the word here..." class="w-full p-3.5 rounded-2xl border-3 border-slate-900 text-center font-black text-lg en-font uppercase tracking-wider focus:outline-none bg-amber-50 focus:bg-white">' +
+                        '</div>' +
+                        '<button type="button" id="check-dictation-btn" class="w-full py-3.5 bg-emerald-400 text-slate-900 font-black rounded-2xl game-btn text-base">تحقق من الإجابة ✨</button>' +
+                    '</div>';
+
+                speakEnglish(dayObj.word);
+                document.getElementById('listen-word-btn').onclick = function() {
+                    soundSystem.playClick();
+                    speakEnglish(dayObj.word);
+                };
+                document.getElementById('check-dictation-btn').onclick = function() {
+                    var typed = (document.getElementById('dictation-input').value || '').trim().toLowerCase();
+                    if (!typed) return;
+                    if (typed === dayObj.word.toLowerCase()) {
+                        completeDaySuccess(world, dayObj);
+                    } else {
+                        soundSystem.playError();
+                        addToReviewBox(dayObj.word, dayObj.hint);
+                        showFeedback('💪', 'حاولي مرة أخرى!', 'تمت إضافة الكلمة إلى صندوق المراجعة لتتدربي عليها، استمعي جيداً وحاولي مجدداً!');
+                    }
+                };
+            } else {
+                var storyHTML = dayObj.story ? '<div class="bg-amber-50 p-3.5 rounded-2xl border-2 border-amber-300 text-left en-font text-sm font-semibold text-slate-800 mb-3 leading-relaxed">📖 ' + dayObj.story + '</div>' : '';
+                var optionsHTML = dayObj.options.map(function(opt) {
+                    return '<button type="button" data-opt="' + opt.replace(/"/g, '&quot;') + '" class="mcq-opt-btn w-full p-3.5 rounded-2xl bg-sky-50 hover:bg-amber-100 border-2 border-slate-900 font-black text-sm en-font text-center game-btn transition">' + opt + '</button>';
+                }).join('');
+
+                body.innerHTML =
+                    '<div class="space-y-4">' +
+                        storyHTML +
+                        '<div class="flex items-center justify-between gap-2 bg-purple-50 p-3.5 rounded-2xl border-2 border-purple-200">' +
+                            '<p class="font-black text-base text-slate-900 en-font text-left flex-1">' + dayObj.question + '</p>' +
+                            '<button type="button" id="speak-q-btn" class="p-2.5 bg-white border-2 border-slate-900 rounded-xl text-sm shrink-0">🔊</button>' +
+                        '</div>' +
+                        '<div class="space-y-2.5">' + optionsHTML + '</div>' +
+                    '</div>';
+
+                document.getElementById('speak-q-btn').onclick = function() {
+                    soundSystem.playClick();
+                    speakEnglish((dayObj.story ? dayObj.story + ' ' : '') + dayObj.question);
+                };
+
+                var btns = body.querySelectorAll('.mcq-opt-btn');
+                btns.forEach(function(b) {
+                    b.onclick = function() {
+                        var chosen = b.getAttribute('data-opt');
+                        if (chosen === dayObj.answer) {
+                            completeDaySuccess(world, dayObj);
+                        } else {
+                            soundSystem.playError();
+                            showFeedback('🤔', 'إجابة غير صحيحة', 'فكري قليلاً وجربي خياراً آخر يا بطلة!');
+                        }
+                    };
+                });
+            }
+        }
+
+        function completeDaySuccess(world, dayObj) {
+            soundSystem.playSuccess();
+            document.getElementById('mission-modal').classList.add('hidden');
+
+            var compList = currentUser.completed[world.id] || [];
+            var isFirstTime = compList.indexOf(dayObj.day) === -1;
+            var unlockedItemLabel = null;
+
+            if (isFirstTime) {
+                compList.push(dayObj.day);
+                currentUser.completed[world.id] = compList;
+                currentUser.stars = (currentUser.stars || 0) + 10;
+                currentUser.gems = (currentUser.gems || 0) + 5;
+                if (dayObj.day < 6) {
+                    currentUser.unlocked[world.id] = Math.max(currentUser.unlocked[world.id] || 1, dayObj.day + 1);
+                }
+                unlockedItemLabel = unlockNextRewardItem();
+            } else {
+                currentUser.stars = (currentUser.stars || 0) + 2;
+            }
+
+            saveCurrentStudentCloud();
+            updateStudentUI();
+
+            showFeedback(
+                '🎉🌟',
+                'رائعة يا بطلة!',
+                isFirstTime ? 'أنهيتِ تحدي اليوم وحصلتِ على +10 نجوم و +5 جواهر!' : 'مراجعة ممتازة! حصلتِ على +2 نجمة إضافية!',
+                unlockedItemLabel
+            );
+        }
+
+        function addToReviewBox(word, hint) {
+            ensureUserDefaults();
+            var exists = currentUser.reviewBox.some(function(item) { return item.word === word; });
+            if (!exists) {
+                currentUser.reviewBox.push({ word: word, hint: hint });
+                saveCurrentStudentCloud();
+                renderReviewBox();
+            }
+        }
+
+        function renderReviewBox() {
+            ensureUserDefaults();
+            var list = document.getElementById('review-list');
+            var badge = document.getElementById('review-count-badge');
+            badge.textContent = currentUser.reviewBox.length + ' كلمات';
+
+            if (currentUser.reviewBox.length === 0) {
+                list.innerHTML = '<div class="text-center py-8 text-slate-400 font-bold text-sm">صندوق المراجعة فارغ حالياً! استمري في التألق 🌟</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            currentUser.reviewBox.forEach(function(item, idx) {
+                var row = document.createElement('div');
+                row.className = 'p-3.5 rounded-2xl bg-rose-50 border-2 border-slate-900 flex flex-wrap items-center justify-between gap-2';
+                row.innerHTML =
+                    '<div>' +
+                        '<div class="font-black text-base text-rose-900 en-font">' + item.word + '</div>' +
+                        '<div class="text-xs font-bold text-slate-600 en-font">' + item.hint + '</div>' +
+                    '</div>' +
+                    '<div class="flex gap-2">' +
+                        '<button type="button" class="rev-listen-btn px-3 py-1.5 bg-sky-300 border-2 border-slate-900 rounded-xl text-xs font-black game-btn">🔊 استماع</button>' +
+                        '<button type="button" class="rev-done-btn px-3 py-1.5 bg-emerald-400 border-2 border-slate-900 rounded-xl text-xs font-black game-btn">أتقنتها ✅</button>' +
+                    '</div>';
+                row.querySelector('.rev-listen-btn').onclick = function() {
+                    soundSystem.playClick();
+                    speakEnglish(item.word);
+                };
+                row.querySelector('.rev-done-btn').onclick = function() {
+                    soundSystem.playSuccess();
+                    currentUser.reviewBox.splice(idx, 1);
+                    currentUser.stars = (currentUser.stars || 0) + 3;
+                    saveCurrentStudentCloud();
+                    updateStudentUI();
+                };
+                list.appendChild(row);
+            });
+        }
+
+        /* -------- ط. استوديو الأفاتار ولوحة المعلمة -------- */
+        var currentAvatarCategory = 'outfit';
+
+        function renderAvatarStudio() {
+            ensureUserDefaults();
+            var totalOwned =
+                (currentUser.unlockedItems.skin || []).length +
+                (currentUser.unlockedItems.hair || []).length +
+                (currentUser.unlockedItems.outfit || []).length +
+                (currentUser.unlockedItems.accessory || []).length;
+            var totalAll =
+                AVATAR_ITEMS.skin.length +
+                AVATAR_ITEMS.hair.length +
+                AVATAR_ITEMS.outfit.length +
+                AVATAR_ITEMS.accessory.length;
+            document.getElementById('unlocked-count-badge').textContent = 'المفتوح: ' + totalOwned + ' / ' + totalAll;
+
+            var catTabs = [
+                { id: 'outfit', label: '👗 الأزياء' },
+                { id: 'hair', label: '💇‍♀️ الشعر' },
+                { id: 'accessory', label: '👑 الإكسسوارات' },
+                { id: 'skin', label: '🎨 البشرة' }
+            ];
+            var tabsEl = document.getElementById('avatar-category-tabs');
+            tabsEl.innerHTML = '';
+            catTabs.forEach(function(ct) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'px-3 py-2 rounded-xl font-black text-xs border-2 border-slate-900 shrink-0 ' + (currentAvatarCategory === ct.id ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-800');
+                b.textContent = ct.label;
+                b.onclick = function() {
+                    soundSystem.playClick();
+                    currentAvatarCategory = ct.id;
+                    renderAvatarStudio();
+                };
+                tabsEl.appendChild(b);
+            });
+
+            var grid = document.getElementById('avatar-items-grid');
+            grid.innerHTML = '';
+            var items = AVATAR_ITEMS[currentAvatarCategory] || [];
+            var ownedList = currentUser.unlockedItems[currentAvatarCategory] || [];
+
+            items.forEach(function(item) {
+                var isOwned = ownedList.indexOf(item.id) !== -1;
+                var isEquipped = currentUser.avatar[currentAvatarCategory] === item.id;
+                var card = document.createElement('button');
+                card.type = 'button';
+
+                if (isOwned) {
+                    card.className = 'p-3 rounded-2xl border-2 border-slate-900 text-center transition ' + (isEquipped ? 'bg-amber-300 ring-2 ring-purple-600 font-black' : 'bg-sky-50 hover:bg-sky-100 font-bold');
+                    card.innerHTML = '<div class="text-xs text-slate-900">' + item.label + '</div>' +
+                        '<div class="text-[10px] mt-1 ' + (isEquipped ? 'text-purple-900' : 'text-emerald-700') + '">' + (isEquipped ? 'مُرتدى حالياً ✨' : 'اضغطي للارتداء') + '</div>';
+                    card.onclick = function() {
+                        soundSystem.playJump();
+                        currentUser.avatar[currentAvatarCategory] = item.id;
+                        saveCurrentStudentCloud();
+                        refreshAllAvatars();
+                        renderAvatarStudio();
+                        jumpAvatar();
+                    };
+                } else {
+                    card.className = 'p-3 rounded-2xl border-2 border-dashed border-slate-400 bg-slate-100 text-center opacity-70';
+                    card.innerHTML = '<div class="text-base mb-0.5">🔒</div><div class="text-[11px] font-bold text-slate-600">' + item.label + '</div><div class="text-[9px] text-purple-700 font-black mt-0.5">يُفتح بإنجاز الأيام</div>';
+                    card.onclick = function() {
+                        soundSystem.playError();
+                        showFeedback('🎁🔒', 'عنصر مقفل', 'أنجزي مهمة يوم جديد في أي جزيرة ليُفتح لكِ هذا العنصر تلقائياً!');
+                    };
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        function jumpAvatar() {
+            soundSystem.playJump();
+            var stage = document.getElementById('studio-avatar-stage');
+            if (!stage) return;
+            stage.classList.remove('avatar-jump');
+            void stage.offsetWidth;
+            stage.classList.add('avatar-jump');
+        }
+
+        function randomizeAvatar() {
+            ensureUserDefaults();
+            ['skin', 'hair', 'outfit', 'accessory'].forEach(function(cat) {
+                var owned = currentUser.unlockedItems[cat] || [];
+                if (owned.length > 0) {
+                    currentUser.avatar[cat] = owned[Math.floor(Math.random() * owned.length)];
+                }
+            });
+            saveCurrentStudentCloud();
+            refreshAllAvatars();
+            renderAvatarStudio();
+            jumpAvatar();
+        }
+
+        function showFeedback(emoji, title, desc, unlockedItemName) {
+            document.getElementById('fb-emoji').textContent = emoji;
+            document.getElementById('fb-title').textContent = title;
+            document.getElementById('fb-desc').textContent = desc;
+            var box = document.getElementById('fb-reward-box');
+            if (unlockedItemName) {
+                document.getElementById('fb-unlocked-item-name').textContent = unlockedItemName;
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        }
+
+        function switchTab(tabName) {
+            soundSystem.playClick();
+            ['map', 'avatar', 'review'].forEach(function(t) {
+                document.getElementById('tab-' + t).classList.toggle('hidden', t !== tabName);
+                var btn = document.getElementById('tab-btn-' + t);
+                if (t === tabName) {
+                    btn.className = 'flex-1 py-2 rounded-2xl font-black text-xs sm:text-sm bg-amber-300 border-2 border-slate-900 transition';
+                } else {
+                    btn.className = 'flex-1 py-2 rounded-2xl font-black text-xs sm:text-sm text-slate-700 hover:bg-slate-100 transition';
                 }
             });
         }
 
-        function quickLogin(username, password) {
-            document.getElementById('login-username').value = username;
-            document.getElementById('login-password').value = password;
-            handleLogin(new Event('submit'));
-        }
+        /* -------- لوحة تحكم المعلمة (76 حساباً) -------- */
+        function renderTeacherPanel() {
+            var tbody = document.getElementById('teacher-students-tbody');
+            document.getElementById('teacher-total-count').textContent = allStudentsCache.length;
+            tbody.innerHTML = '';
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value.trim();
-            const errEl = document.getElementById('login-error');
-            errEl.classList.add('hidden');
-
-            if (username === 'teacher' && password === '123456') {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('teacher-app').classList.remove('hidden');
-                renderTeacherDashboard();
-            } else if (username.length > 0) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('student-app').classList.remove('hidden');
-                initStudentSession();
-            } else {
-                errEl.innerText = 'يرجى التأكد من اسم المستخدم وكلمة المرور!';
-                errEl.classList.remove('hidden');
-            }
-        }
-
-        function logout() {
-            document.getElementById('student-app').classList.add('hidden');
-            document.getElementById('teacher-app').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-        }
-
-        function initStudentSession() {
-            document.getElementById('student-welcome-name').innerText = `مرحباً، جود ⭐`;
-            document.getElementById('stat-stars').innerText = studentData.profile.stars;
-            document.getElementById('stat-gems').innerText = studentData.profile.gems;
-            document.getElementById('stat-crowns').innerText = studentData.profile.crowns;
-
-            renderStudentAvatars();
-            renderWorldsList();
-            renderStagesGrid();
-            renderReviewBox();
-        }
-
-        function renderStudentAvatars() {
-            const svg = buildTocaAvatarSVG(studentData.profile.avatar_config);
-            document.getElementById('student-header-avatar').innerHTML = svg;
-            document.getElementById('home-avatar-stage').innerHTML = svg;
-            document.getElementById('studio-avatar-stage').innerHTML = svg;
-            renderAvatarCustomizerControls();
-        }
-
-        function renderAvatarCustomizerControls() {
-            const container = document.getElementById('avatar-customizer-controls');
-            if (!container) return;
-            container.innerHTML = `
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div>
-                        <label class="font-black block mb-1">لون البشرة:</label>
-                        <select onchange="updateAvatarPart('skin', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
-                            ${AVATAR_CATALOG.skin.map(s => `<option value="${s.id}" ${studentData.profile.avatar_config.skin === s.id ? 'selected' : ''}>${s.label}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="font-black block mb-1">تسريحة الشعر:</label>
-                        <select onchange="updateAvatarPart('hair', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
-                            ${AVATAR_CATALOG.hair.map(h => `<option value="${h.id}" ${studentData.profile.avatar_config.hair === h.id ? 'selected' : ''}>${h.label}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="font-black block mb-1">الملابس:</label>
-                        <select onchange="updateAvatarPart('outfit', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
-                            ${AVATAR_CATALOG.outfit.map(o => `<option value="${o.id}" ${studentData.profile.avatar_config.outfit === o.id ? 'selected' : ''}>${o.label}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="font-black block mb-1">الإكسسوار:</label>
-                        <select onchange="updateAvatarPart('accessory', this.value)" class="w-full p-2 rounded-xl border-2 border-slate-900 bg-white font-bold">
-                            ${AVATAR_CATALOG.accessory.map(a => `<option value="${a.id}" ${studentData.profile.avatar_config.accessory === a.id ? 'selected' : ''}>${a.label}</option>`).join('')}
-                        </select>
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateAvatarPart(part, val) {
-            studentData.profile.avatar_config[part] = val;
-            renderStudentAvatars();
-        }
-
-        function switchStudentTab(tab) {
-            document.getElementById('tab-map').classList.add('hidden');
-            document.getElementById('tab-avatar').classList.add('hidden');
-            document.getElementById('tab-review').classList.add('hidden');
-
-            if (tab === 'map') document.getElementById('tab-map').classList.remove('hidden');
-            if (tab === 'avatar') document.getElementById('tab-avatar').classList.remove('hidden');
-            if (tab === 'review') {
-                document.getElementById('tab-review').classList.remove('hidden');
-                renderReviewBox();
-            }
-        }
-
-        function selectWorld(worldKey) {
-            studentData.currentWorld = worldKey;
-            renderWorldsList();
-            renderStagesGrid();
-        }
-
-        function renderWorldsList() {
-            const container = document.getElementById('worlds-list');
-            container.innerHTML = WORLDS_DATA.map(w => {
-                const isSelected = studentData.currentWorld === w.key;
-                const unlockedStage = studentData.unlockedStages[w.key] || 1;
-                return `
-                    <div onclick="selectWorld('${w.key}')" class="game-card p-4 cursor-pointer transition ${isSelected ? 'bg-pink-50 border-pink-500 ring-2 ring-pink-400' : 'bg-white hover:bg-sky-50'}">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-base font-black text-slate-800">${w.title}</h4>
-                            <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full text-[10px] font-black border border-slate-900">مرحلة ${unlockedStage}/6</span>
-                        </div>
-                        <p class="text-[11px] font-bold text-slate-500 mt-1">${w.desc}</p>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderStagesGrid() {
-            const worldKey = studentData.currentWorld;
-            const worldObj = WORLDS_DATA.find(w => w.key === worldKey);
-            const unlockedMax = studentData.unlockedStages[worldKey] || 1;
-            const completedList = studentData.completedStages[worldKey] || [];
-
-            document.getElementById('current-world-title').innerText = `${worldObj.title} - ${worldObj.desc}`;
-            document.getElementById('world-progress-badge').innerText = `المرحلة الحالية المتاحة: يوم ${unlockedMax}`;
-
-            const grid = document.getElementById('stages-grid');
-            grid.innerHTML = '';
-
-            for (let s = 1; s <= 6; s++) {
-                const isCompleted = completedList.includes(s);
-                const isUnlocked = s <= unlockedMax;
-                let badge = isCompleted ? '✅ منجزة' : (isUnlocked ? '⭐ ابدأ اليوم' : '🔒 مغلق ليوم غد');
-                let bgClass = isCompleted ? 'bg-emerald-100 border-emerald-500 text-emerald-900' : (isUnlocked ? 'bg-amber-50 hover:bg-amber-100 border-slate-900 text-amber-900 cursor-pointer' : 'bg-slate-100 border-slate-300 text-slate-400 opacity-70');
-
-                grid.innerHTML += `
-                    <div onclick="${isUnlocked ? `openMissionModal('${worldKey}', ${s})` : `alert('🌸 عودي غداً يا جميلة وأكملي مهامكِ بكل حماس واستمري في تجميع النجوم لفتح هذا اليوم! ✨')`}" 
-                         class="game-card p-4 text-center rounded-2xl border-2 ${bgClass} transition">
-                        <div class="text-xl font-black mb-1">اليوم ${s}</div>
-                        <div class="text-xs font-bold">${badge}</div>
-                    </div>
-                `;
-            }
-        }
-
-        function openMissionModal(worldKey, stageNum) {
-            const missions = MISSIONS_BY_STAGE[worldKey];
-            const m = missions[stageNum - 1] || missions[0];
-
-            document.getElementById('gm-title').innerText = m.title;
-            document.getElementById('gm-story').innerText = m.story;
-            document.getElementById('gm-icon').innerText = m.type === 'listen' ? '🎧' : '🎮';
-
-            const body = document.getElementById('gm-body');
-            const p = m.payload;
-
-            let passageHtml = p.passage ? `
-                <div class="bg-emerald-50 p-3.5 rounded-2xl text-sm en-font text-left leading-relaxed text-slate-800 mb-3 border-2 border-emerald-300">
-                    <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-xs font-bold text-emerald-700">Reading Passage:</span>
-                        <button type="button" onclick="speakWord('${p.passage.replace(/'/g, "\\'")}')" class="px-3 py-1 bg-white text-emerald-800 rounded-xl border border-slate-900 font-black text-xs">🔊 استمعي للقطعة</button>
-                    </div>
-                    ${p.passage}
-                </div>` : '';
-
-            let listenChoiceBtn = `
-                <div class="bg-purple-100 p-3 rounded-2xl text-center border-2 border-slate-900 mb-3 flex items-center justify-between">
-                    <span class="text-xs font-black text-purple-900">🎧 مهارة الاستماع الاختيارية:</span>
-                    <button type="button" onclick="speakWord('${p.speakText || p.answer}')" class="px-3.5 py-1.5 bg-purple-600 text-white rounded-xl font-black text-xs game-btn">
-                        🔊 استمع للصوت الآن
-                    </button>
-                </div>
-            `;
-
-            body.innerHTML = `
-                ${passageHtml}
-                ${listenChoiceBtn}
-                <div class="flex items-center justify-between gap-2 bg-sky-50 p-3 rounded-2xl border border-sky-200">
-                    <p class="en-font text-base font-bold text-slate-900">${p.prompt || p.clue}</p>
-                    <button type="button" onclick="speakWord('${(p.prompt || p.answer).replace(/'/g, "\\'")}')" class="px-3 py-1 bg-sky-200 text-sky-950 rounded-xl border border-slate-900 font-black text-xs">🔊 اسمع</button>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3 en-font">
-                    ${p.options ? p.options.map(opt => `
-                        <button onclick="submitAnswer('${worldKey}', ${stageNum}, ${m.stars}, '${opt}', '${p.answer}', '${p.arabicMeaning}')" class="p-3.5 bg-purple-50 hover:bg-pink-100 rounded-2xl font-bold text-slate-800 game-btn text-center">
-                            ${opt}
-                        </button>
-                    `).join('') : `
-                        <input id="text-answer" type="text" placeholder="اكتبي الإجابة..." class="w-full p-3 rounded-2xl border-2 border-slate-900 text-center en-font font-bold">
-                        <button onclick="submitAnswer('${worldKey}', ${stageNum}, ${m.stars}, document.getElementById('text-answer').value, '${p.answer}', '${p.arabicMeaning}')" class="w-full py-3 bg-emerald-500 text-white font-black game-btn">تحقق من الإجابة ✨</button>
-                    `}
-                </div>
-            `;
-            document.getElementById('mission-modal').classList.remove('hidden');
-            document.getElementById('mission-modal').classList.add('flex');
-        }
-
-        function closeMissionModal() {
-            document.getElementById('mission-modal').classList.add('hidden');
-            document.getElementById('mission-modal').classList.remove('flex');
-        }
-
-        function submitAnswer(worldKey, stageNum, rewardStars, userAns, correctAns, arabicMeaning) {
-            const isCorrect = userAns.trim().toLowerCase() === correctAns.trim().toLowerCase();
-            closeMissionModal();
-
-            if (isCorrect) {
-                soundFX.playWin();
-                studentData.profile.stars += rewardStars;
-                document.getElementById('stat-stars').innerText = studentData.profile.stars;
-
-                if (!studentData.completedStages[worldKey].includes(stageNum)) {
-                    studentData.completedStages[worldKey].push(stageNum);
-                }
-
-                renderStagesGrid();
-                renderWorldsList();
-
-                document.getElementById('celebration-title').innerText = 'أحسنتِ يا بطلة! 🌟';
-                document.getElementById('celebration-desc').innerText = `إجابة صحيحة رائعة! كسبتِ نجمة جديدة ⭐️. عودي غداً يا جميلة واكملي مهامكِ لفتح اليوم التالي!`;
-                document.getElementById('celebration-overlay').classList.remove('hidden');
-            } else {
-                studentData.reviewBox.push({ word: correctAns, meaning: arabicMeaning });
-                document.getElementById('celebration-title').innerText = 'حاولي مرة أخرى! 💪';
-                document.getElementById('celebration-desc').innerText = `إجابة غير دقيقة. تمت إضافة الكلمة والمعنى إلى صندوق المراجعة لتراجعيهما.`;
-                document.getElementById('celebration-overlay').classList.remove('hidden');
-                renderReviewBox();
-            }
-        }
-
-        function closeCelebration() {
-            document.getElementById('celebration-overlay').classList.add('hidden');
-        }
-
-        function renderReviewBox() {
-            const container = document.getElementById('review-words-container');
-            if (!container) return;
-            if (studentData.reviewBox.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center text-slate-500 bg-amber-50 rounded-2xl border-2 border-dashed border-amber-300 font-bold">صندوق المراجعة فارغ! أنتِ مذهلة! 🌟</div>`;
+            if (allStudentsCache.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center font-bold text-slate-400">لا توجد حسابات معروضة حالياً. اضغطي على "توليد 76 حساباً" أعلاه لإنشاء حسابات الطالبات فوراً!</td></tr>';
                 return;
             }
-            container.innerHTML = studentData.reviewBox.map((item) => `
-                <div class="bg-amber-50 border-2 border-slate-900 p-4 rounded-2xl flex justify-between items-center gap-3">
-                    <div>
-                        <div class="en-font text-lg font-black text-amber-900">${item.word}</div>
-                        <div class="text-xs font-bold text-slate-700">${item.meaning}</div>
-                    </div>
-                    <button onclick="speakWord('${item.word}')" class="px-3 py-1.5 bg-sky-200 text-sky-950 border border-slate-900 rounded-xl font-black text-xs game-btn">🔊 انطق</button>
-                </div>
-            `).join('');
+
+            allStudentsCache.forEach(function(st) {
+                var totalDone = 0;
+                if (st.completed) {
+                    Object.keys(st.completed).forEach(function(k) {
+                        totalDone += (st.completed[k] || []).length;
+                    });
+                }
+                var tr = document.createElement('tr');
+                tr.className = 'hover:bg-sky-50';
+                tr.innerHTML =
+                    '<td class="p-3 font-black text-slate-900">' + st.name + '</td>' +
+                    '<td class="p-3 font-bold">' + (st.classRoom || '5A') + '</td>' +
+                    '<td class="p-3 font-black en-font text-purple-800">' + st.username + '</td>' +
+                    '<td class="p-3 font-black en-font text-emerald-700">' + st.password + '</td>' +
+                    '<td class="p-3 font-black">' + (st.stars || 0) + ' ⭐</td>' +
+                    '<td class="p-3 font-bold">' + totalDone + ' / 30</td>';
+                tbody.appendChild(tr);
+            });
         }
 
-        function renderTeacherDashboard() {
-            const tbody = document.getElementById('teacher-students-tbody');
-            tbody.innerHTML = `
-                <tr>
-                    <td class="p-3 font-black text-slate-800">جود أحمد</td>
-                    <td class="p-3 en-font text-indigo-700">jood</td>
-                    <td class="p-3">5A</td>
-                    <td class="p-3 text-amber-600 font-black">60 ⭐</td>
-                    <td class="p-3 text-teal-600 font-black">2 👑</td>
-                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-black text-[11px]">مستقرة وممتازة</span></td>
-                </tr>
-            `;
+        async function generate76CloudAccounts() {
+            soundSystem.playClick();
+            var classes = ['5A', '5B', '5C'];
+            var generated = [];
+            for (var i = 1; i <= 76; i++) {
+                var numStr = i < 10 ? '0' + i : '' + i;
+                var uname = 'star' + numStr;
+                var pass = '' + (1000 + i * 13);
+                var cls = classes[(i - 1) % 3];
+                var studentObj = {
+                    name: 'طالبة ' + numStr,
+                    username: uname,
+                    password: pass,
+                    classRoom: cls,
+                    stars: 0,
+                    gems: 0,
+                    crowns: 0,
+                    unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                    avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                    currentWorld: 'sound_island',
+                    unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                    completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                    reviewBox: []
+                };
+                generated.push(studentObj);
+                saveStudentToCloud(studentObj);
+            }
+            allStudentsCache = generated;
+            renderTeacherPanel();
+            showFeedback('🎉👩‍🏫', 'تم توليد 76 حساباً وحفظها سحابياً!', 'أصبحت جميع الحسابات صفرية ومتاحة للطالبات من أي جهاز!');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderStudentAvatars();
-        });
+        async function addSingleStudentCloud() {
+            soundSystem.playClick();
+            var name = document.getElementById('new-student-name').value.trim();
+            var uname = document.getElementById('new-student-user').value.trim().toLowerCase();
+            var pass = document.getElementById('new-student-pass').value.trim();
+            var cls = document.getElementById('new-student-class').value;
+            if (!name || !uname || !pass) {
+                showFeedback('⚠️', 'بيانات ناقصة', 'يرجى كتابة اسم الطالبة واسم المستخدم وكلمة المرور.');
+                return;
+            }
+            var studentObj = {
+                name: name,
+                username: uname,
+                password: pass,
+                classRoom: cls,
+                stars: 0,
+                gems: 0,
+                crowns: 0,
+                unlockedItems: { skin: ['fair'], hair: ['buns'], outfit: ['hoodie'], accessory: ['none'] },
+                avatar: { skin: 'fair', hair: 'buns', outfit: 'hoodie', accessory: 'none' },
+                currentWorld: 'sound_island',
+                unlocked: { sound_island: 1, word_island: 1, story_city: 1, grammar_cavern: 1, quiz_arena: 1 },
+                completed: { sound_island: [], word_island: [], story_city: [], grammar_cavern: [], quiz_arena: [] },
+                reviewBox: []
+            };
+            allStudentsCache.unshift(studentObj);
+            await saveStudentToCloud(studentObj);
+            document.getElementById('new-student-name').value = '';
+            document.getElementById('new-student-user').value = '';
+            document.getElementById('new-student-pass').value = '';
+            renderTeacherPanel();
+            showFeedback('✅', 'تمت إضافة الطالبة وحفظها!', 'تم حفظ حساب (' + name + ') سحابياً ويمكنها الدخول الآن من أي جهاز.');
+        }
+
+        function copyAccountsForWhatsApp() {
+            soundSystem.playClick();
+            if (allStudentsCache.length === 0) {
+                showFeedback('ℹ️', 'لا توجد حسابات', 'اضغطي على زر توليد 76 حساباً أولاً.');
+                return;
+            }
+            var lines = ['🌟 بيانات الدخول لمنصة English Stars Adventure 🌟', ''];
+            allStudentsCache.forEach(function(st) {
+                lines.push('👤 ' + st.name + ' (' + (st.classRoom || '5A') + ') | المستخدم: ' + st.username + ' | الرمز: ' + st.password);
+            });
+            var text = lines.join('\n');
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showFeedback('📋✅', 'تم النسخ بنجاح!', 'تم نسخ جميع حسابات الطالبات وكلمات المرور للحافظة، يمكنكِ لصقها في الواتساب مباشرة!');
+        }
+
+        /* -------- ي. تهيئة وربط جميع الأزرار عند تحميل الصفحة -------- */
+        function updateQRCodeImage(customUrl) {
+            var targetUrl = customUrl || window.location.href;
+            if (!targetUrl || targetUrl.startsWith('about:') || targetUrl.startsWith('blob:') || targetUrl.startsWith('data:')) {
+                targetUrl = 'https://english-stars-adventure.app';
+            }
+            var qrInput = document.getElementById('qr-url-input');
+            if (qrInput && !customUrl) qrInput.value = targetUrl;
+            var qrImg = document.getElementById('site-qr-img');
+            if (qrImg) {
+                qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=' + encodeURIComponent(targetUrl);
+            }
+        }
+
+        function initAppBindings() {
+            refreshAllAvatars();
+            updateQRCodeImage();
+
+            var qrInput = document.getElementById('qr-url-input');
+            if (qrInput) {
+                qrInput.oninput = function() {
+                    updateQRCodeImage(qrInput.value.trim());
+                };
+            }
+
+            document.getElementById('show-qr-btn').onclick = function() {
+                soundSystem.playClick();
+                updateQRCodeImage();
+                document.getElementById('qr-modal').classList.remove('hidden');
+            };
+
+            document.getElementById('close-qr-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('qr-modal').classList.add('hidden');
+            };
+
+            document.getElementById('enter-login-from-qr-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('qr-modal').classList.add('hidden');
+            };
+
+            document.getElementById('copy-link-btn').onclick = function() {
+                soundSystem.playClick();
+                var val = document.getElementById('qr-url-input').value;
+                var ta = document.createElement('textarea');
+                ta.value = val;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showFeedback('📋✅', 'تم نسخ الرابط!', 'يمكنكِ مشاركة الرابط أو الباركود مع طالباتك الآن.');
+            };
+
+            var loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    doLogin(document.getElementById('login-username').value, document.getElementById('login-password').value);
+                };
+            }
+
+            document.getElementById('quick-teacher-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('teacher-pin-error').classList.add('hidden');
+                document.getElementById('teacher-pin-input').value = '';
+                document.getElementById('teacher-pin-modal').classList.remove('hidden');
+                document.getElementById('teacher-pin-input').focus();
+            };
+
+            document.getElementById('cancel-teacher-pin-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('teacher-pin-modal').classList.add('hidden');
+            };
+
+            document.getElementById('confirm-teacher-pin-btn').onclick = function() {
+                soundSystem.playClick();
+                var pin = document.getElementById('teacher-pin-input').value.trim();
+                if (pin === '0000') {
+                    document.getElementById('teacher-pin-modal').classList.add('hidden');
+                    doLogin('teacher', '0000');
+                } else {
+                    document.getElementById('teacher-pin-error').classList.remove('hidden');
+                }
+            };
+
+            document.getElementById('bgm-toggle-btn').onclick = function() {
+                soundSystem.toggleBGM();
+            };
+
+            document.getElementById('student-logout-btn').onclick = doLogout;
+            document.getElementById('teacher-logout-btn').onclick = doLogout;
+
+            document.getElementById('header-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('map-mini-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('studio-avatar-stage').onclick = jumpAvatar;
+            document.getElementById('random-avatar-btn').onclick = randomizeAvatar;
+
+            document.getElementById('tab-btn-map').onclick = function() { switchTab('map'); };
+            document.getElementById('tab-btn-avatar').onclick = function() { switchTab('avatar'); };
+            document.getElementById('tab-btn-review').onclick = function() { switchTab('review'); };
+
+            document.getElementById('close-mission-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('mission-modal').classList.add('hidden');
+            };
+            document.getElementById('close-fb-btn').onclick = function() {
+                soundSystem.playClick();
+                document.getElementById('feedback-modal').classList.add('hidden');
+            };
+
+            document.getElementById('gen-76-btn').onclick = generate76CloudAccounts;
+            document.getElementById('add-single-student-btn').onclick = addSingleStudentCloud;
+            document.getElementById('copy-whatsapp-btn').onclick = copyAccountsForWhatsApp;
+            document.getElementById('print-cards-btn').onclick = function() {
+                soundSystem.playClick();
+                window.print();
+            };
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAppBindings);
+        } else {
+            initAppBindings();
+        }
     </script>
 </body>
 </html>
